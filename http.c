@@ -17,7 +17,6 @@ char *build_headers(char *response, const int len) {
   strcat(full_msg, len_as_str);
   strcat(full_msg, "\r\n\r\n");
   strcat(full_msg, response);
-  printf("header_main: \n%s", full_msg);
 
   return full_msg;
 }

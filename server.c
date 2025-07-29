@@ -19,6 +19,7 @@ int main(void) {
   struct sockaddr_storage client_addr;
   socklen_t addr_size = sizeof client_addr;
   int getaddrinfo_status;
+  char recv_buf[1024];
 
   memset(&hints, 0, sizeof hints);
 
@@ -59,6 +60,15 @@ int main(void) {
     perror("accept");
     exit(1);
   }
+
+  int num_bytes;
+  if ((num_bytes = recv(new_fd, recv_buf, 1024, 0)) == -1) {
+    perror("recv");
+    exit(1);
+  }
+
+  recv_buf[num_bytes] = '\0';
+  printf("received from client:\n%s", recv_buf);
 
   char *response = "Server says hello :)\n";
   int response_len = strlen(response);

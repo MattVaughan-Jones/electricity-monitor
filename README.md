@@ -3,39 +3,9 @@ Pretty much what I want in the end: https://www.geeksforgeeks.org/c/socket-progr
 
 # Project guidance
 
-In terms of HTTP, the only resource you need is the HTTP standard itself. https://tools.ietf.org/html/rfc1945
-
-For now, you're only going to concern yourself with:
-
-What constitutes a properly-formatted request.
-
 The conditions that would result in following properly-formatted responses: 200 OK, 400 Bad Request, 403 Forbidden, 404 Not Found, 500 Internal Service Error, and 501 Not Implemented (These are the codes you're going to implement)
 
-For now, ignore everything related to headers other than noting that headers exist.
-
-In terms of the sockets stuff, use Beej's guide. https://beej.us/guide/bgnet/. At its simplest, your program needs to:
-
-Create a socket
-
-Bind the socket to an address
-
-Listen on the address
-
-Block on Accept until a connection is made
-
-Read on the connected socket
-
-Figure out how to respond
-
-Write back on the connected socket
-
-Close the connection
-
-Go back to blocking on Accept
-
-That out of the way, here's a quick checklist to give your project a little structure:
-
-Write a program that accepts a connection on a port (specify the port number as a command line argument), and immediately sends back a dummy HTTP 1.0 "200 OK" response, along with a dummy minimal HTML-encoded message before closing the connection. For the entire project, you're going to respond with HTTP 1.0 responses regardless of what version of the request you receive. Test this using netcat, then try it using a web browser.
+Here's a quick checklist to give your project a little structure:
 
 Modify your program to parse the request. You can ignore all of the headers for now. For now, you're only responding to validly formatted GET requests. Send the dummy message back for any validly formatted GET requests. If the request is improperly formatted, respond 400. For any other valid requests apart from GET requests, respond with 501.
 
