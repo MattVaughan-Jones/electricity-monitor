@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD
-SRCS = server.c
+SRCS = server.c http.c utils.c
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/server
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)

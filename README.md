@@ -44,3 +44,19 @@ Modify your program to take another command line argument for the "root" directo
 Add a couple of folders to your root folder, and add dummy html files (and dummy index.html files) to them. Add a few levels of nested folders. Modify your program to improve the path-parsing logic to handle folders, and handle responses appropriately.
 
 Modify the permissions on a few dummy folders and files to make their read permissions forbidden to your server program. Implement the 403 response appropriately. Scrutinize the URI standard, and modify your path-parsing to strip out (and handle) any troublesome characters. Modify your path-parsing to handle (ignore) query strings and fragments. (? and #). Modify your path-parsing to ensure it does not allow malicious folder navigation using "..".
+
+# If making it multi-threaded later
+
+Should add:
+
+```
+sa.sa_handler = sigchld_handler; // reap all dead processes
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+  if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+    perror("sigaction");
+    exit(1);
+  }
+```
+
+From: https://beej.us/guide/bgnet/html/index-wide.html#a-simple-stream-server
