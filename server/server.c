@@ -1,4 +1,4 @@
-#include "http.h"
+#include "router.h"
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -13,14 +13,12 @@
 #define PORT "8080"
 #define BACKLOG 1
 
-int main(void)
-{
+int main(void) {
   int sock_fd, new_fd;
   struct addrinfo hints, *server_info;
   struct sockaddr_storage client_addr;
   socklen_t addr_size = sizeof client_addr;
   int getaddrinfo_status;
-  char recv_buf[1024];
 
   memset(&hints, 0, sizeof hints);
 
@@ -30,37 +28,32 @@ int main(void)
   hints.ai_flags = AI_PASSIVE;
 
   if ((getaddrinfo_status = getaddrinfo(NULL, PORT, &hints, &server_info)) !=
-      0)
-  {
+      0) {
     fprintf(stderr, "getaddrinfo error: %s\n",
             gai_strerror(getaddrinfo_status));
     exit(1);
   }
 
   if ((sock_fd = socket(server_info->ai_family, server_info->ai_socktype,
-                        server_info->ai_protocol)) < 0)
-  {
+                        server_info->ai_protocol)) < 0) {
     perror("set sock_fd");
     exit(1);
   }
 
   int yes = 1;
-  if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0)
-  {
+  if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0) {
     perror("setsockopt");
     exit(1);
   }
 
-  if ((bind(sock_fd, server_info->ai_addr, server_info->ai_addrlen)) < 0)
-  {
+  if ((bind(sock_fd, server_info->ai_addr, server_info->ai_addrlen)) < 0) {
     perror("bind");
     exit(1);
   }
 
   freeaddrinfo(server_info);
 
-  if ((listen(sock_fd, BACKLOG) != 0))
-  {
+  if ((listen(sock_fd, BACKLOG) != 0)) {
     perror("listen");
     exit(1);
   }
@@ -68,28 +61,12 @@ int main(void)
   printf("server: waiting for connections...\n");
 
   if ((new_fd = accept(sock_fd, (struct sockaddr *)&client_addr, &addr_size)) <
-      0)
-  {
+      0) {
     perror("accept");
     exit(1);
   }
 
-  int num_bytes;
-  if ((num_bytes = recv(new_fd, recv_buf, 1024, 0)) == -1)
-  {
-    perror("recv");
-    exit(1);
-  }
-
-  recv_buf[num_bytes] = '\0';
-  printf("received from client:\n%s", recv_buf);
-
-  char *response = "Server says hello :)\n";
-  int response_len = strlen(response);
-  char *msg = build_headers(response, response_len);
-
-  int message_len = strlen(msg);
-  send(new_fd, msg, message_len, 0);
+  (void)router(new_fd);
 
   close(new_fd);
   close(sock_fd);
