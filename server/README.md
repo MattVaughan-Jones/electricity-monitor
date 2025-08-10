@@ -1,5 +1,8 @@
 The bible: https://beej.us/guide/bgnet/html/index-wide.html
-Pretty much what I want in the end: https://www.geeksforgeeks.org/c/socket-programming-cc/
+Structure of a server: https://nmon.sourceforge.io/pmwiki.php?n=Site.Nweb
+
+how to build a WS server: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers#the_websocket_handshake
+how to build a WS client: https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications
 
 # TODO
 

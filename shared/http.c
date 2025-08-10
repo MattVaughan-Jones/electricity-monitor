@@ -3,9 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *build_headers(char *response, const int len) {
-  char *header_main = "HTTP/1.1 200 OK\r\nContent-Type: "
-                      "text/plain\r\nConnection: close\r\nContent-Length:";
+char *build_headers(char *response, const int len)
+{
+  char *header_main =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Type: text/plain\r\n"
+      "Connection: close\r\n"
+      "Content-Length:";
   int header_main_len = strlen(header_main);
   int copy_len = len;
   int count_chars_in_len = count_digits(copy_len);

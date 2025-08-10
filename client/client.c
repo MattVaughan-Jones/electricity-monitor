@@ -1,4 +1,5 @@
 #include "http.h"
+#include "ws.c"
 
 #include <netdb.h>
 #include <stdio.h>
@@ -72,9 +73,7 @@ int main(void)
 
     freeaddrinfo(servinfo);
 
-    char *response = "";
-    int response_len = strlen(response);
-    char *msg = build_headers(response, response_len);
+    char *msg = ws_connection_req("localhost", PORT, "$$key$");
 
     send(sock_fd, msg, strlen(msg), 0);
 
@@ -87,7 +86,7 @@ int main(void)
 
     buf[numbytes] = '\0';
 
-    printf("client: received '%s'\n", buf);
+    printf("client: received\n\n%s", buf);
 
     close(sock_fd);
 
