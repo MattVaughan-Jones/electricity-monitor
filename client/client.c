@@ -1,5 +1,5 @@
+#include "http.h"
 #include "sec-websocket-key.h"
-#include "ws.c"
 
 #include <arpa/inet.h>
 #include <netdb.h>

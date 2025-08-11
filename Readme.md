@@ -1,5 +1,9 @@
 This project contains code for a WS client and a WS server.
 
+# TODO
+
+- consider implementing authentication
+
 # How to build for deployment
 
 ## Prerequisites

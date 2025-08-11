@@ -1,4 +1,4 @@
-#include "http_req.h"
+#include "http.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,14 +25,14 @@ void router(int client_fd) {
   if (strncmp(path, "/websocket-connect", strlen(path)) == 0) {
     char *response = "initiating websocket handshake\n";
     int response_len = strlen(response);
-    char *msg = build_headers(response, response_len);
+    char *msg = build_req(response, response_len);
 
     int message_len = strlen(msg);
     send(client_fd, msg, message_len, 0);
   } else {
     char *response = "Server says hello :)\n";
     int response_len = strlen(response);
-    char *msg = build_headers(response, response_len);
+    char *msg = build_req(response, response_len);
 
     int message_len = strlen(msg);
     send(client_fd, msg, message_len, 0);
