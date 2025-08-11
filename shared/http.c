@@ -1,21 +1,22 @@
-#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-char *build_req(char *response, const int len) {
+char *build_req(char *response) {
   char *template = "HTTP/1.1 200 OK\r\n"
                    "Content-Type: text/plain\r\n"
                    "Connection: close\r\n"
                    "Content-Length: %d\r\n\r\n"
                    "%s";
 
-  int req_len = snprintf(NULL, 0, template, len, response) + 1;
+  int response_len = strlen(response);
+
+  int req_len = snprintf(NULL, 0, template, response_len, response) + 1;
   char *req = malloc(req_len);
   if (req == NULL)
     return NULL;
 
-  snprintf(req, req_len, template, len, response);
+  snprintf(req, req_len, template, response_len, response);
 
   return req;
 }
