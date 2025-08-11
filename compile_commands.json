@@ -1,0 +1,94 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-c",
+      "-o",
+      "build/http_req.o",
+      "http_req.c"
+    ],
+    "directory": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared",
+    "file": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/http_req.c",
+    "output": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/build/http_req.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-c",
+      "-o",
+      "build/utils.o",
+      "utils.c"
+    ],
+    "directory": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared",
+    "file": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/utils.c",
+    "output": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/build/utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-c",
+      "-o",
+      "build/ws.o",
+      "ws.c"
+    ],
+    "directory": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared",
+    "file": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/ws.c",
+    "output": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/build/ws.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-c",
+      "-o",
+      "build/sec-websocket-key.o",
+      "sec-websocket-key.c"
+    ],
+    "directory": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared",
+    "file": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/sec-websocket-key.c",
+    "output": "/Users/mattvaughan-jones/Projects/electricity-monitor/shared/build/sec-websocket-key.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-I../shared",
+      "-c",
+      "-o",
+      "build/server.o",
+      "server.c"
+    ],
+    "directory": "/Users/mattvaughan-jones/Projects/electricity-monitor/server",
+    "file": "/Users/mattvaughan-jones/Projects/electricity-monitor/server/server.c",
+    "output": "/Users/mattvaughan-jones/Projects/electricity-monitor/server/build/server.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-I../shared",
+      "-c",
+      "-o",
+      "build/router.o",
+      "router.c"
+    ],
+    "directory": "/Users/mattvaughan-jones/Projects/electricity-monitor/server",
+    "file": "/Users/mattvaughan-jones/Projects/electricity-monitor/server/router.c",
+    "output": "/Users/mattvaughan-jones/Projects/electricity-monitor/server/build/router.o"
+  }
+]
