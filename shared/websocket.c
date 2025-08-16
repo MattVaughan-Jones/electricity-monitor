@@ -5,45 +5,50 @@
 #include <string.h>
 #include <time.h>
 
-#define MAGIC_WEBSOCKET_STRING "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-
-int generate_swk(char *buffer) {
+void base64_encode(char *output_buf, const unsigned char *input,
+                   int input_len) {
   // Base64 encoding table
   const char base64_chars[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+  int j = 0;
+
+  // Process input in groups of 3 bytes
+  for (int i = 0; i < input_len; i += 3) {
+    uint32_t octet_1 = input[i];
+    uint32_t octet_2 = (i + 1 < input_len) ? input[i + 1] : 0;
+    uint32_t octet_3 = (i + 2 < input_len) ? input[i + 2] : 0;
+
+    uint32_t triple = (octet_1 << 16) + (octet_2 << 8) + octet_3;
+
+    output_buf[j++] = base64_chars[(triple >> 18) & 63];
+    output_buf[j++] = base64_chars[(triple >> 12) & 63];
+    output_buf[j++] = base64_chars[(triple >> 6) & 63];
+    output_buf[j++] = base64_chars[triple & 63];
+  }
+
+  // Add padding for incomplete triplets
+  int padding = (3 - (input_len % 3)) % 3;
+  for (int i = 0; i < padding; i++) {
+    output_buf[j - 1 - i] = '=';
+  }
+
+  output_buf[j] = '\0';
+}
+
+int generate_swk(char *buffer) {
   static int seeded = 0;
   if (!seeded) {
     srand(time(NULL));
     seeded = 1;
   }
 
-  unsigned char random_bytes[16];
-  for (int i = 0; i < 16; i++) {
+  unsigned char random_bytes[WEBSOCKET_KEY_INPUT_STR_LEN];
+  for (int i = 0; i < WEBSOCKET_KEY_INPUT_STR_LEN; i++) {
     random_bytes[i] = rand() % 256;
   }
 
-  for (int i = 0, j = 0; i < 16;) {
-    uint32_t octet_1 = i < 16 ? random_bytes[i++] : 0;
-    uint32_t octet_2 = i < 16 ? random_bytes[i++] : 0;
-    uint32_t octet_3 = i < 16 ? random_bytes[i++] : 0;
-
-    uint32_t triple = (octet_1 << 16) + (octet_2 << 8) + octet_3;
-
-    buffer[j++] = base64_chars[(triple >> 18) & 63];
-    buffer[j++] = base64_chars[(triple >> 12) & 63];
-    buffer[j++] = base64_chars[(triple >> 6) & 63];
-    buffer[j++] = base64_chars[(triple) & 63];
-  }
-  buffer[SEC_WEBSOCKET_KEY_SIZE] = '\0';
+  base64_encode(buffer, random_bytes, WEBSOCKET_KEY_INPUT_STR_LEN);
 
   return 0;
-}
-
-char *calculate_sec_websocket_accept(const char *recv_buf) {
-  // TODO: Implement proper WebSocket accept key calculation
-  // For now, return a placeholder
-  char *placeholder = malloc(10);
-  strcpy(placeholder, "placeholder");
-  return placeholder;
 }

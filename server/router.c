@@ -44,7 +44,6 @@ void router(int client_fd) {
   // route on URL path
   if ((get_path_result = get_path(recv_buf, path)) != 0) {
     controller_unable_to_parse_path(client_fd);
-    return;
   }
   if (strncmp(path, "/websocket-connect", strlen("/websocket-connect")) == 0) {
     controller_websocket_connect(recv_buf, client_fd);

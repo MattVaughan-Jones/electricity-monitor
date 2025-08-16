@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD
-SRCS = http.c websocket.c
+SRCS = http.c websocket.c sha1.c
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/shared.a
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)

@@ -56,14 +56,25 @@ char *ws_connection_req(char *domain, char *PORT, char *ws_req_key) {
   return req;
 }
 
-// char *ws_connection_upgrade_res(char *ws_accept_key) {
-//   char *outcome = "HTTP/1.1 101 Switching Protocols\r\n"
-//                   "Upgrade: websocket\r\n"
-//                   "Connection: Upgrade\r\n"
-//                   "Sec-WebSocket-Accept:
-//                   s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\n\r\n";
-//   char *template = "HTTP/1.1 101 Switching Protocols\r\n"
-//                    "Upgrade: websocket\r\n"
-//                    "Connection: Upgrade\r\n"
-//                    "Sec-WebSocket-Accept: %s\r\n\r\n";
-// }
+char *ws_connection_upgrade_res(char *ws_accept_key) {
+  // char *outcome = "HTTP/1.1 101 Switching Protocols\r\n"
+  //                 "Upgrade: websocket\r\n"
+  //                 "Connection: Upgrade\r\n"
+  //                 "Sec-WebSocket-Accept:
+  //                 s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\n\r\n";
+
+  char *template = "HTTP/1.1 101 Switching Protocols\r\n"
+                   "Upgrade: websocket\r\n"
+                   "Connection: Upgrade\r\n"
+                   "Sec-WebSocket-Accept: %s\r\n\r\n";
+
+  int req_len = snprintf(NULL, 0, template, ws_accept_key) + 1;
+
+  char *req = malloc(req_len);
+  if (!req)
+    return NULL;
+
+  snprintf(req, req_len, template, ws_accept_key);
+
+  return req;
+}
