@@ -19,7 +19,7 @@ int validate_sock_con_req(char *recv_buf) {
   if (strstr(recv_buf, "Sec-WebSocket-Key:") == NULL) {
     fprintf(stderr,
             "Server: invalid websocket connection request (missing "
-            "sec-websocket-key): %s",
+            "sec-websocket-key):\n%s",
             recv_buf);
     return -3;
   }

@@ -1,5 +1,7 @@
-#include "http.h"
-#include "validators.h"
+#include "controllers/default.h"
+#include "controllers/unable_to_parse_path.h"
+#include "controllers/websocket_connect.h"
+#include "websocket.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,6 +23,7 @@ int get_path(char *recv_buf, char *path) {
   first_line[first_line_len] = '\0';
 
   sscanf(first_line, "%s %s %s", method, path, version);
+
   return 0;
 }
 
@@ -34,38 +37,18 @@ void router(int client_fd) {
     perror("recv");
     exit(1);
   }
-
   recv_buf[num_bytes] = '\0';
   printf("received from client:\n%s", recv_buf);
 
   int get_path_result;
+  // route on URL path
   if ((get_path_result = get_path(recv_buf, path)) != 0) {
-    // TODO - return a 5xx response here
-    // TODO - probably modify build_req() to accept a status code as an arg
-    char *response = "Internal server error: unable to parse path\n";
-    char *msg = build_req(response);
-
-    int message_len = strlen(msg);
-    send(client_fd, msg, message_len, 0);
+    controller_unable_to_parse_path(client_fd);
+    return;
   }
-
-  if (strncmp(path, "/websocket-connect", strlen(path)) == 0) {
-    int isValid = validate_sock_con_req(recv_buf);
-    char *response;
-    if (isValid != 0) {
-      response = "Error: invalid socket connection request\n";
-    } else {
-      response = "initiating websocket handshake\n";
-    }
-    char *msg = build_req(response);
-
-    int message_len = strlen(msg);
-    send(client_fd, msg, message_len, 0);
+  if (strncmp(path, "/websocket-connect", strlen("/websocket-connect")) == 0) {
+    controller_websocket_connect(recv_buf, client_fd);
   } else {
-    char *response = "Server says hello :)\n";
-    char *msg = build_req(response);
-
-    int message_len = strlen(msg);
-    send(client_fd, msg, message_len, 0);
+    controller_default(client_fd);
   }
 }

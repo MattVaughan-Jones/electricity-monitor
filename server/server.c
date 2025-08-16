@@ -58,7 +58,7 @@ int main(void) {
     exit(1);
   }
 
-  printf("server: waiting for connections...\n");
+  printf("server: waiting for connections...\n\n");
 
   if ((new_fd = accept(sock_fd, (struct sockaddr *)&client_addr, &addr_size)) <
       0) {

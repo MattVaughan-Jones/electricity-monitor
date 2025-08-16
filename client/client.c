@@ -1,5 +1,5 @@
 #include "http.h"
-#include "sec-websocket-key.h"
+#include "websocket.h"
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -11,7 +11,7 @@
 
 #define PORT "8080"
 #define URL "localhost"
-#define MAXDATASIZE 120 // max number of bytes we can get at once
+#define MAXDATASIZE 256 // max number of bytes we can get at once
 
 void *get_in_addr(struct sockaddr *sa) {
   if (sa->sa_family == AF_INET) {
@@ -90,7 +90,7 @@ int main(void) {
 
   buf[numbytes] = '\0';
 
-  printf("client: received\n\n%s", buf);
+  printf("\nclient: received\n%s\n", buf);
 
   close(sock_fd);
 

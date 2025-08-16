@@ -1,6 +1,6 @@
 .PHONY: all clean build-server build-shared
 
-all: build-server
+all: build-server build-client
 
 build-shared:
 	$(MAKE) -C shared

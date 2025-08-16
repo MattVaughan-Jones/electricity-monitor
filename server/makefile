@@ -1,5 +1,7 @@
 CFLAGS ?= -Wall -Wextra -g -MMD
-SRCS = server.c router.c validators.c
+CONTROLLER_SRCS = $(wildcard controllers/*.c)
+CORE_SRCS = server.c router.c validators.c
+SRCS = $(CORE_SRCS) $(CONTROLLER_SRCS)
 BUILD_DIR = build
 SHARED = ../shared/build/shared.a
 TARGET = $(BUILD_DIR)/server
@@ -9,8 +11,12 @@ DEPS = $(OBJS:.o=.d)
 $(TARGET): $(OBJS) $(SHARED) | $(BUILD_DIR)
 	clang $(CFLAGS) $(OBJS) $(SHARED) -o $(TARGET)
 
+$(SHARED):
+	$(MAKE) -C ../shared
+
 # Object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+	@mkdir -p $(dir $@)
 	clang $(CFLAGS) -I../shared -c $< -o $@
 
 # Create build directory

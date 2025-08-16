@@ -1,8 +1,11 @@
-#include "sec-websocket-key.h"
+#include "websocket.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
+
+#define MAGIC_WEBSOCKET_STRING "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 
 int generate_swk(char *buffer) {
   // Base64 encoding table
@@ -35,4 +38,12 @@ int generate_swk(char *buffer) {
   buffer[SEC_WEBSOCKET_KEY_SIZE] = '\0';
 
   return 0;
+}
+
+char *calculate_sec_websocket_accept(const char *recv_buf) {
+  // TODO: Implement proper WebSocket accept key calculation
+  // For now, return a placeholder
+  char *placeholder = malloc(10);
+  strcpy(placeholder, "placeholder");
+  return placeholder;
 }

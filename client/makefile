@@ -9,6 +9,9 @@ DEPS = $(OBJS:.o=.d)
 $(TARGET): $(OBJS) $(SHARED) | $(BUILD_DIR)
 	clang $(CFLAGS) $(OBJS) $(SHARED) -o $(TARGET)
 
+$(SHARED):
+	$(MAKE) -C ../shared
+
 # Object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	clang $(CFLAGS) -I../shared -c $< -o $@
