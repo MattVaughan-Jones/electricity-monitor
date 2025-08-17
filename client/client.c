@@ -1,3 +1,4 @@
+#include "client-validator.h"
 #include "http.h"
 #include "websocket.h"
 
@@ -89,6 +90,10 @@ int main(void) {
   }
 
   buf[numbytes] = '\0';
+
+  if (validate_wsa_res(buf, sec_websocket_key) != 0) {
+    close(sock_fd);
+  }
 
   printf("\nclient: received\n%s\n", buf);
 

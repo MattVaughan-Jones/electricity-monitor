@@ -1,7 +1,6 @@
 #include "controllers/default.h"
 #include "controllers/unable_to_parse_path.h"
 #include "controllers/websocket_connect.h"
-#include "websocket.h"
 
 #include <stdio.h>
 #include <stdlib.h>

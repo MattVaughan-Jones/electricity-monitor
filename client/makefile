@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD
-SRCS = client.c
+SRCS = client.c client-validator.c
 BUILD_DIR = build
 SHARED = ../shared/build/shared.a
 TARGET = $(BUILD_DIR)/client

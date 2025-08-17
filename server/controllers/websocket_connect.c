@@ -1,9 +1,7 @@
 #include "../validators.h"
 #include "http.h"
-#include "sha1.h"
 #include "websocket.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -27,37 +25,6 @@ int get_swk_from_header(char *swk_encoded, char *recv_buf) {
     return 0;
   }
   return 1;
-}
-
-char *generate_swa(char *swk_encoded) {
-  char *concatenated_key =
-      malloc(strlen(swk_encoded) + strlen(MAGIC_WEBSOCKET_STRING) + 1);
-  snprintf(concatenated_key,
-           strlen(swk_encoded) + strlen(MAGIC_WEBSOCKET_STRING) + 1, "%s%s",
-           swk_encoded, MAGIC_WEBSOCKET_STRING);
-
-  SHA1_CTX sha;
-  uint8_t results[20];
-
-  int concatenated_key_len = strlen(concatenated_key);
-  SHA1Init(&sha);
-  SHA1Update(&sha, (uint8_t *)concatenated_key, concatenated_key_len);
-  SHA1Final(results, &sha);
-
-  /* Print the digest as one long hex value */
-  // printf("hash: ");
-  // for (concatenated_key_len = 0; concatenated_key_len < 20;
-  //      concatenated_key_len++)
-
-  // {
-  //   printf("%02x", results[concatenated_key_len]);
-  // }
-  // printf("\n");
-
-  char *swa_key = malloc(31);
-  base64_encode(swa_key, results, strlen((char *)results));
-  swa_key[31] = '\0';
-  return swa_key;
 }
 
 void controller_websocket_connect(char *recv_buf, int client_fd) {

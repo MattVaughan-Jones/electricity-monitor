@@ -6,6 +6,7 @@
 #define WEBSOCKET_KEY_INPUT_STR_LEN 16
 
 int generate_swk(char *buffer);
+char *generate_swa(const char *swk_encoded);
 void base64_encode(char *output_buf, const unsigned char *input, int input_len);
 
 #endif

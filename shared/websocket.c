@@ -5,6 +5,8 @@
 #include <string.h>
 #include <time.h>
 
+#include "sha1.h"
+
 void base64_encode(char *output_buf, const unsigned char *input,
                    int input_len) {
   // Base64 encoding table
@@ -51,4 +53,35 @@ int generate_swk(char *buffer) {
   base64_encode(buffer, random_bytes, WEBSOCKET_KEY_INPUT_STR_LEN);
 
   return 0;
+}
+
+char *generate_swa(const char *swk_encoded) {
+  char *concatenated_key =
+      malloc(strlen(swk_encoded) + strlen(MAGIC_WEBSOCKET_STRING) + 1);
+  snprintf(concatenated_key,
+           strlen(swk_encoded) + strlen(MAGIC_WEBSOCKET_STRING) + 1, "%s%s",
+           swk_encoded, MAGIC_WEBSOCKET_STRING);
+
+  SHA1_CTX sha;
+  uint8_t results[20];
+
+  int concatenated_key_len = strlen(concatenated_key);
+  SHA1Init(&sha);
+  SHA1Update(&sha, (uint8_t *)concatenated_key, concatenated_key_len);
+  SHA1Final(results, &sha);
+
+  /* Print the digest as one long hex value */
+  // printf("hash: ");
+  // for (concatenated_key_len = 0; concatenated_key_len < 20;
+  //      concatenated_key_len++)
+
+  // {
+  //   printf("%02x", results[concatenated_key_len]);
+  // }
+  // printf("\n");
+
+  char *swa = malloc(31);
+  base64_encode(swa, results, strlen((char *)results));
+  swa[31] = '\0';
+  return swa;
 }
