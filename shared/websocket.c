@@ -7,14 +7,18 @@
 
 #include "sha1.h"
 
-void base64_encode(char *output_buf, const unsigned char *input,
-                   int input_len) {
+int base64_encode(char *output_buf, const unsigned char *input, int input_len) {
+
+  if (!output_buf || !input) {
+    fprintf(stderr, "passed NULL pointer to base64_encode\n");
+    return -1;
+  }
+
   // Base64 encoding table
   const char base64_chars[] =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
   int j = 0;
-
   // Process input in groups of 3 bytes
   for (int i = 0; i < input_len; i += 3) {
     uint32_t octet_1 = input[i];
@@ -36,28 +40,46 @@ void base64_encode(char *output_buf, const unsigned char *input,
   }
 
   output_buf[j] = '\0';
+
+  return 0;
 }
 
-int generate_swk(char *buffer) {
+char *generate_swk() {
   static int seeded = 0;
   if (!seeded) {
     srand(time(NULL));
     seeded = 1;
   }
 
+  char *buffer = malloc(SEC_WEBSOCKET_KEY_SIZE + 1);
+  if (buffer == NULL) {
+    fprintf(stderr, "failed to allocate sec_websocket_key\n");
+    return NULL;
+  }
+  buffer[SEC_WEBSOCKET_KEY_SIZE] = '\0';
+
   unsigned char random_bytes[WEBSOCKET_KEY_INPUT_STR_LEN];
   for (int i = 0; i < WEBSOCKET_KEY_INPUT_STR_LEN; i++) {
     random_bytes[i] = rand() % 256;
   }
 
-  base64_encode(buffer, random_bytes, WEBSOCKET_KEY_INPUT_STR_LEN);
+  if (base64_encode(buffer, random_bytes, WEBSOCKET_KEY_INPUT_STR_LEN) != 0) {
+    fprintf(stderr, "failed to base64 encode\n");
+    free(buffer);
+    return NULL;
+  }
 
-  return 0;
+  return buffer;
 }
 
 char *generate_swa(const char *swk_encoded) {
   char *concatenated_key =
       malloc(strlen(swk_encoded) + strlen(MAGIC_WEBSOCKET_STRING) + 1);
+  if (!concatenated_key) {
+    fprintf(stderr, "failed to allocate concatenated_key in generate_swa\n");
+    return NULL;
+  }
+
   snprintf(concatenated_key,
            strlen(swk_encoded) + strlen(MAGIC_WEBSOCKET_STRING) + 1, "%s%s",
            swk_encoded, MAGIC_WEBSOCKET_STRING);
@@ -70,18 +92,29 @@ char *generate_swa(const char *swk_encoded) {
   SHA1Update(&sha, (uint8_t *)concatenated_key, concatenated_key_len);
   SHA1Final(results, &sha);
 
+  free(concatenated_key);
+
   /* Print the digest as one long hex value */
   // printf("hash: ");
-  // for (concatenated_key_len = 0; concatenated_key_len < 20;
-  //      concatenated_key_len++)
+  // for (int i = 0; i < 20;
+  //      i++)
 
   // {
-  //   printf("%02x", results[concatenated_key_len]);
+  //   printf("%02x", results[i]);
   // }
   // printf("\n");
 
-  char *swa = malloc(31);
-  base64_encode(swa, results, strlen((char *)results));
-  swa[31] = '\0';
+  int base64_output_size = (20 + 2) / 3 * 4;
+
+  char *swa = malloc(base64_output_size + 1);
+  if (!swa) {
+    fprintf(stderr, "failed to allocate swa in generate_swa\n");
+    return NULL;
+  }
+
+  if (base64_encode(swa, results, 20) != 0) {
+    fprintf(stderr, "failed to base64 encode\n");
+    return NULL;
+  }
   return swa;
 }

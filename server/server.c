@@ -36,7 +36,7 @@ int main(void) {
 
   if ((sock_fd = socket(server_info->ai_family, server_info->ai_socktype,
                         server_info->ai_protocol)) < 0) {
-    perror("set sock_fd");
+    perror("socket");
     exit(1);
   }
 
@@ -46,14 +46,14 @@ int main(void) {
     exit(1);
   }
 
-  if ((bind(sock_fd, server_info->ai_addr, server_info->ai_addrlen)) < 0) {
+  if (bind(sock_fd, server_info->ai_addr, server_info->ai_addrlen) < 0) {
     perror("bind");
     exit(1);
   }
 
   freeaddrinfo(server_info);
 
-  if ((listen(sock_fd, BACKLOG) != 0)) {
+  if (listen(sock_fd, BACKLOG != 0)) {
     perror("listen");
     exit(1);
   }

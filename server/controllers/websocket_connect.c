@@ -2,64 +2,126 @@
 #include "http.h"
 #include "websocket.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 
-int get_swk_from_header(char *swk_encoded, char *recv_buf) {
+static int get_swk_from_header(char *swk_encoded, char *recv_buf) {
+  if (!swk_encoded || !recv_buf) {
+    fprintf(stderr, "undefined argument passed to get_swk_from_header\n");
+    return 1;
+  }
+
+  int result = 1;
   char *req = malloc(strlen(recv_buf) + 1);
+  if (!req) {
+    fprintf(stderr,
+            "failed to allocate memory for req in get_swk_from_header\n");
+    return 1;
+  }
+
   strcpy(req, recv_buf);
   char *key_line = strstr(req, "Sec-WebSocket-Key:");
-  char *key_start = key_line + strlen("Sec-WebSocket-Key:");
-  while (*key_start == ' ')
-    key_start++;
 
-  char *key_end = strpbrk(key_line, "\r\n");
-  if (key_end) {
-    int swk_encoded_len = key_end - key_start;
-    if (swk_encoded_len != SEC_WEBSOCKET_KEY_SIZE) {
-      return 1;
+  if (key_line) {
+    char *key_start = key_line + strlen("Sec-WebSocket-Key:");
+    while (*key_start == ' ')
+      key_start++;
+
+    char *key_end = strstr(key_line, "\r\n");
+    if (key_end) {
+      int swk_encoded_len = key_end - key_start;
+      if (swk_encoded_len == SEC_WEBSOCKET_KEY_SIZE) {
+        swk_encoded = strncpy(swk_encoded, key_start, swk_encoded_len);
+        swk_encoded[swk_encoded_len] = '\0';
+        result = 0;
+      }
     }
-    swk_encoded = strncpy(swk_encoded, key_start, swk_encoded_len);
-    swk_encoded[swk_encoded_len] = '\0';
-    return 0;
   }
-  return 1;
+  free(req);
+  return result;
 }
 
 void controller_websocket_connect(char *recv_buf, int client_fd) {
-  int isValid = validate_sock_con_req(recv_buf);
-  if (isValid != 0) {
-    char *msg = build_req("Error: invalid socket connection request\n", 400);
-    int message_len = strlen(msg);
-    send(client_fd, msg, message_len, 0);
-  } else {
-    // TODO -
-    // extract swk - done
-    // append magic string - done
-    // SHA-1 hash of the string -> 20 byte binary value
-    // base 64 encode that hash === header
+  if (!recv_buf || !client_fd) {
+    fprintf(stderr,
+            "undefined argument passed to controller_websocket_connect\n");
+    return;
+  }
 
-    char *swk_encoded = malloc(SEC_WEBSOCKET_KEY_SIZE);
-    int get_swk_from_header_result;
-    if ((get_swk_from_header_result =
-             get_swk_from_header(swk_encoded, recv_buf)) != 0) {
+  if (validate_sock_con_req(recv_buf) != 0) {
+    char *msg = build_req("Invalid web socket connection request\n", 400);
+    if (msg == NULL) {
+      fprintf(stderr, "failed to allocate msg in controller_websocket_connect "
+                      "for failed validation\n");
+      return;
+    }
+
+    int message_len = strlen(msg);
+    if (send(client_fd, msg, message_len, 0) == -1) {
+      perror("send");
+      return;
+    }
+    free(msg);
+  } else {
+    char *swk_encoded = malloc(SEC_WEBSOCKET_KEY_SIZE + 1);
+    if (swk_encoded == NULL) {
+      fprintf(
+          stderr,
+          "failed to allocate swk_encoded in controller_websocket_connect\n");
+      return;
+    }
+
+    if (get_swk_from_header(swk_encoded, recv_buf) != 0) {
       // TODO - probably need some better error handling for cases like this.
-      // Would be nice to log an error which would somehow be caught and
+      // Would be nice to throw an error which would somehow be caught and
       // return a 500 with that error string. Implement helper func for this.
       char *response =
-          "Internal server error: unable to decode Sec-Websocket-Key\n";
+          "Internal server error: unable to find Sec-Websocket-Key";
       char *msg = build_req(response, 500);
+      if (msg == NULL) {
+        fprintf(stderr, "failed to allocate msg in "
+                        "controller_websocket_connect for parsing header\n");
+        free(swk_encoded);
+        return;
+      }
 
       int message_len = strlen(msg);
-      send(client_fd, msg, message_len, 0);
+      if (send(client_fd, msg, message_len, 0) == -1) {
+        perror("send");
+        free(msg);
+        free(swk_encoded);
+        return;
+      }
+      free(msg);
     }
 
     char *sec_websocket_accept_key = generate_swa(swk_encoded);
+    if (sec_websocket_accept_key == NULL) {
+      fprintf(stderr, "failed to allocate sec_websocket_accept_key\n");
+      free(swk_encoded);
+      return;
+    }
+
+    free(swk_encoded);
 
     char *res = ws_connection_upgrade_res(sec_websocket_accept_key);
-    // char *res = ws_connection_upgrade_res();
+    if (res == NULL) {
+      fprintf(stderr,
+              "failed to allocate res in controller_websocket_connect\n");
+      free(sec_websocket_accept_key);
+      return;
+    }
+
     int res_len = strlen(res);
-    send(client_fd, res, res_len, 0);
+    if (send(client_fd, res, res_len, 0) == -1) {
+      perror("send");
+      free(sec_websocket_accept_key);
+      free(res);
+      return;
+    }
+    free(sec_websocket_accept_key);
+    free(res);
   }
 }

@@ -1,4 +1,4 @@
-CFLAGS ?= -Wall -Wextra -g -MMD
+CFLAGS ?= -Wall -Wextra -g -MMD -fsanitize=address
 CONTROLLER_SRCS = $(wildcard controllers/*.c)
 CORE_SRCS = server.c router.c validators.c
 SRCS = $(CORE_SRCS) $(CONTROLLER_SRCS)

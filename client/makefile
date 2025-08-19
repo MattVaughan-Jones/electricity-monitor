@@ -1,4 +1,4 @@
-CFLAGS ?= -Wall -Wextra -g -MMD
+CFLAGS ?= -Wall -Wextra -g -MMD -fsanitize=address
 SRCS = client.c client-validator.c
 BUILD_DIR = build
 SHARED = ../shared/build/shared.a

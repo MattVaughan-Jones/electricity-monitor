@@ -45,12 +45,15 @@ int main(void) {
       perror("client: socket");
       continue;
     }
-    inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s,
-              sizeof s);
+    if (inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s,
+                  sizeof s) == NULL) {
+      perror("inet_ntop");
+      close(sock_fd);
+    }
     printf("client: attempting to connect to %s\n", s);
 
     if (connect(sock_fd, p->ai_addr, p->ai_addrlen) == -1) {
-      perror("client: connect\n");
+      perror("client: connect");
       close(sock_fd);
       continue;
     }
@@ -60,6 +63,7 @@ int main(void) {
 
   if (p == NULL) {
     fprintf(stderr, "client: failed to connect\n");
+    freeaddrinfo(servinfo);
     return 2;
   }
 
@@ -69,33 +73,51 @@ int main(void) {
 
   freeaddrinfo(servinfo);
 
-  char *sec_websocket_key = malloc(SEC_WEBSOCKET_KEY_SIZE + 1);
+  char *sec_websocket_key = generate_swk();
   if (sec_websocket_key == NULL) {
-    fprintf(stderr, "client: failed to allocate sec_websocket_key");
+    fprintf(stderr, "client: failed to generate sec_websocket_key\n");
+    close(sock_fd);
     return 1;
   }
-  int gswk_output;
-  if ((gswk_output = generate_swk(sec_websocket_key)) != 0) {
-    fprintf(stderr, "client: failed to generate sec_websocket_key");
-    return 1;
-  }
+
   char *msg = ws_connection_req("localhost", PORT, sec_websocket_key);
+  if (msg == NULL) {
+    fprintf(stderr, "client: failed to generate ws_connection_req\n");
+    close(sock_fd);
+    free(sec_websocket_key);
+    return 1;
+  }
 
-  send(sock_fd, msg, strlen(msg), 0);
+  if (send(sock_fd, msg, strlen(msg), 0) == -1) {
+    perror("send");
+    free(msg);
+    free(sec_websocket_key);
+    close(sock_fd);
+    return 1;
+  }
 
-  int numbytes;
-  if ((numbytes = recv(sock_fd, buf, MAXDATASIZE - 1, 0)) == -1) {
-    perror("recv\n");
-    exit(1);
+  free(msg);
+
+  int numbytes = recv(sock_fd, buf, MAXDATASIZE - 1, 0);
+  if (numbytes == -1) {
+    perror("recv");
+    free(sec_websocket_key);
+    close(sock_fd);
+    return 1;
   }
 
   buf[numbytes] = '\0';
 
+  printf("\nclient: received\n%s\n", buf);
+
   if (validate_wsa_res(buf, sec_websocket_key) != 0) {
+    fprintf(stderr, "client: WebSocket validation failed\n");
+    free(sec_websocket_key);
     close(sock_fd);
+    return 1;
   }
 
-  printf("\nclient: received\n%s\n", buf);
+  free(sec_websocket_key);
 
   close(sock_fd);
 

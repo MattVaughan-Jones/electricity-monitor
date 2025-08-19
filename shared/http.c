@@ -16,6 +16,11 @@ char *get_status_line(int status_code) {
 }
 
 char *build_req(char *response, int status_code) {
+  if (response == NULL) {
+    fprintf(stderr, "passed NULL pointer to build_req\n");
+    return NULL;
+  }
+
   char *template = "HTTP/1.1 %s\r\n"
                    "Content-Type: text/plain\r\n"
                    "Connection: close\r\n"
@@ -29,8 +34,10 @@ char *build_req(char *response, int status_code) {
   int req_len =
       snprintf(NULL, 0, template, status_line, response_len, response) + 1;
   char *req = malloc(req_len);
-  if (req == NULL)
+  if (req == NULL) {
+    fprintf(stderr, "Unable to allocate req in build_req\n");
     return NULL;
+  }
 
   snprintf(req, req_len, template, status_line, response_len, response);
 
@@ -38,6 +45,10 @@ char *build_req(char *response, int status_code) {
 }
 
 char *ws_connection_req(char *domain, char *PORT, char *ws_req_key) {
+  if (domain == NULL || PORT == NULL || ws_req_key == NULL) {
+    fprintf(stderr, "passed NULL pointer to ws_connection_req\n");
+    return NULL;
+  }
   char *template = "GET /websocket-connect HTTP/1.1\r\n"
                    "Host: %s:%s\r\n"
                    "Upgrade: websocket\r\n"
@@ -48,8 +59,10 @@ char *ws_connection_req(char *domain, char *PORT, char *ws_req_key) {
   int req_len = snprintf(NULL, 0, template, domain, PORT, ws_req_key) + 1;
 
   char *req = malloc(req_len);
-  if (!req)
+  if (req == NULL) {
+    fprintf(stderr, "Unable to allocate req in ws_connection_req\n");
     return NULL;
+  }
 
   snprintf(req, req_len, template, domain, PORT, ws_req_key);
 
@@ -57,11 +70,10 @@ char *ws_connection_req(char *domain, char *PORT, char *ws_req_key) {
 }
 
 char *ws_connection_upgrade_res(char *ws_accept_key) {
-  // char *outcome = "HTTP/1.1 101 Switching Protocols\r\n"
-  //                 "Upgrade: websocket\r\n"
-  //                 "Connection: Upgrade\r\n"
-  //                 "Sec-WebSocket-Accept:
-  //                 s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\n\r\n";
+  if (ws_accept_key == NULL) {
+    fprintf(stderr, "passed NULL pointer to ws_connection_upgrade_res\n");
+    return NULL;
+  }
 
   char *template = "HTTP/1.1 101 Switching Protocols\r\n"
                    "Upgrade: websocket\r\n"
@@ -71,8 +83,10 @@ char *ws_connection_upgrade_res(char *ws_accept_key) {
   int req_len = snprintf(NULL, 0, template, ws_accept_key) + 1;
 
   char *req = malloc(req_len);
-  if (!req)
+  if (req == NULL) {
+    fprintf(stderr, "Unable to allocate req in ws_connection_upgrade_res\n");
     return NULL;
+  }
 
   snprintf(req, req_len, template, ws_accept_key);
 
