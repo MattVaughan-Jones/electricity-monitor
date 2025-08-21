@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD -fsanitize=address
-CONTROLLER_SRCS = $(wildcard controllers/*.c)
+CONTROLLER_SRCS = $(wildcard controllers/*.c) $(wildcard ws-controllers/*.c)
 CORE_SRCS = server.c router.c validators.c
 SRCS = $(CORE_SRCS) $(CONTROLLER_SRCS)
 BUILD_DIR = build

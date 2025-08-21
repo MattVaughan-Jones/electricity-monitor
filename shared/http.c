@@ -15,8 +15,8 @@ char *get_status_line(int status_code) {
   }
 }
 
-char *build_req(char *response, int status_code) {
-  if (response == NULL) {
+char *build_req(char *content, int status_code) {
+  if (content == NULL) {
     fprintf(stderr, "passed NULL pointer to build_req\n");
     return NULL;
   }
@@ -29,17 +29,17 @@ char *build_req(char *response, int status_code) {
 
   char *status_line = get_status_line(status_code);
 
-  int response_len = strlen(response);
+  int content_len = strlen(content);
 
   int req_len =
-      snprintf(NULL, 0, template, status_line, response_len, response) + 1;
+      snprintf(NULL, 0, template, status_line, content_len, content) + 1;
   char *req = malloc(req_len);
   if (req == NULL) {
     fprintf(stderr, "Unable to allocate req in build_req\n");
     return NULL;
   }
 
-  snprintf(req, req_len, template, status_line, response_len, response);
+  snprintf(req, req_len, template, status_line, content_len, content);
 
   return req;
 }

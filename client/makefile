@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD -fsanitize=address
-SRCS = client.c client-validator.c
+SRCS = client.c client-validator.c stream-data.c
 BUILD_DIR = build
 SHARED = ../shared/build/shared.a
 TARGET = $(BUILD_DIR)/client

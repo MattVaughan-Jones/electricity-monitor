@@ -1,5 +1,6 @@
 #include "client-validator.h"
 #include "http.h"
+#include "stream-data.h"
 #include "websocket.h"
 
 #include <arpa/inet.h>
@@ -116,6 +117,8 @@ int main(void) {
     close(sock_fd);
     return 1;
   }
+
+  stream_data(sock_fd);
 
   free(sec_websocket_key);
 

@@ -1,4 +1,5 @@
 #include "../validators.h"
+#include "../ws-controllers/main.h"
 #include "http.h"
 #include "websocket.h"
 
@@ -125,6 +126,9 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
     free(res);
     return;
   }
+
+  handle_websocket_communication(client_fd);
+
   free(sec_websocket_accept_key);
   free(res);
 }
