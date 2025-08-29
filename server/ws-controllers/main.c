@@ -19,7 +19,7 @@ void handle_websocket_communication(int client_fd) {
 
     buffer[bytes + 1] = '\0';
 
-    printf("received data from client: %s\n", buffer);
+    // printf("received data from client: %s\n", buffer);
   }
 
   close(client_fd);

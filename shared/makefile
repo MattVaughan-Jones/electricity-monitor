@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD
-SRCS = http.c websocket.c sha1.c
+SRCS = http.c base64.c sha1.c ws-http-keys.c ws-protocol/ws-encode.c
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/shared.a
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
@@ -10,6 +10,7 @@ $(TARGET): $(OBJS) | $(BUILD_DIR)
 
 # Object files
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+	@mkdir -p $(dir $@)  # Create subdirectories as needed
 	clang $(CFLAGS) -c $< -o $@
 
 # Create build directory

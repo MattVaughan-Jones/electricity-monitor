@@ -1,7 +1,7 @@
 #include "client-validator.h"
 #include "http.h"
 #include "stream-data.h"
-#include "websocket.h"
+#include "ws-http-keys.h"
 
 #include <arpa/inet.h>
 #include <netdb.h>
