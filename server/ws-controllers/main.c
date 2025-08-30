@@ -19,7 +19,14 @@ void handle_websocket_communication(int client_fd) {
 
     buffer[bytes + 1] = '\0';
 
-    // printf("received data from client: %s\n", buffer);
+    printf("Received ws frame:\n");
+    for (int i = 0; i < bytes; i++) {
+      for (int bit = 7; bit >= 0; bit--) {
+        printf("%d", ((unsigned char)buffer[i] >> bit) & 1);
+      }
+      printf("\n");
+    }
+    printf("\n");
   }
 
   close(client_fd);

@@ -6,15 +6,15 @@
 #include "ws-protocol/ws-encode.h"
 
 void stream_data(int sock_fd) {
-  char string1[10] = "Hey there";
+  char string1[10] = "55555";
   // char string2[128] = "This will be a 128 byte string:
   // lwsiafjliwjelwijclweijflisejfaliwjfalfjailjflaisjefdlasjefoajwijlwajijasilfjfijwalefjaseijfeals";
 
-  unsigned char *ws_frame_buf = ws_encode(string1, 1);
+  ws_frame_buf_t *ws_frame_buf = ws_encode(string1, 1);
   printf("frame:\n");
-  print_binary_bytes(ws_frame_buf, 15);
+  print_binary_bytes(ws_frame_buf->frame_buf, ws_frame_buf->len);
 
-  send(sock_fd, ws_frame_buf, sizeof(ws_frame_buf), 0);
+  send(sock_fd, ws_frame_buf->frame_buf, ws_frame_buf->len, 0);
   // sleep(2);
   // send(sock_fd, ws_encoded2, sizeof(ws_encoded2), 0);
 }

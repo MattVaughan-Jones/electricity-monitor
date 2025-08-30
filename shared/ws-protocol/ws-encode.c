@@ -1,3 +1,4 @@
+#include "ws-encode.h"
 #include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -126,8 +127,8 @@ int mask_unmask_payload(ws_frame_t *frame) {
 /* MAIN FUNCTION */
 /* this implementation does not facilitate continuation frames or payloads
  * larger than 65,536 bytes */
-unsigned char *ws_encode(const char *input_payload,
-                         const unsigned int should_mask) {
+ws_frame_buf_t *ws_encode(const char *input_payload,
+                          const unsigned int should_mask) {
   if (!input_payload) {
     return NULL;
   }
@@ -201,5 +202,8 @@ unsigned char *ws_encode(const char *input_payload,
   // print_binary_bytes(frame_buf, frame.frame_len);
 
   free(frame.payload);
-  return frame_buf;
+  ws_frame_buf_t *encoded_frame = malloc(frame.frame_len + sizeof(int));
+  encoded_frame->frame_buf = frame_buf;
+  encoded_frame->len = frame.frame_len;
+  return encoded_frame;
 }
