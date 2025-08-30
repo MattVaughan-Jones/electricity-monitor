@@ -15,6 +15,10 @@ void stream_data(int sock_fd) {
   print_binary_bytes(ws_frame_buf->frame_buf, ws_frame_buf->len);
 
   send(sock_fd, ws_frame_buf->frame_buf, ws_frame_buf->len, 0);
-  // sleep(2);
-  // send(sock_fd, ws_encoded2, sizeof(ws_encoded2), 0);
+
+  sleep(1);
+  send(sock_fd, ws_frame_buf->frame_buf, ws_frame_buf->len, 0);
+
+  free(ws_frame_buf->frame_buf);
+  free(ws_frame_buf);
 }

@@ -35,18 +35,13 @@ void print_binary_bytes(const unsigned char *binary, int num_bytes) {
 }
 
 /* HELPER FUNCTIONS */
-void encode_payload(ws_frame_t *frame, const char *input_payload) {
+void encode_payload(ws_frame_t *frame, char *input_payload) {
   if (!input_payload || frame->payload_len <= 0) {
     fprintf(stderr, "payload is NULL or frame.payload_len <= 0");
     return;
   }
 
-  frame->payload = malloc(frame->payload_len);
-  if (!frame->payload) {
-    fprintf(stderr, "unable to allocate frame->payload");
-    return;
-  }
-  memcpy(frame->payload, input_payload, frame->payload_len);
+  frame->payload = (unsigned char *)input_payload;
 }
 
 void calculate_frame_len(ws_frame_t *frame) {
@@ -66,30 +61,44 @@ int assemble_frame(unsigned char *frame_buf, const ws_frame_t *frame) {
     return -1;
   }
   size_t offset = 0;
+
+  if (offset + 2 > frame->frame_len) {
+    fprintf(stderr,
+            "caught buffer overflow before allocating first_byte, second_byte");
+    return -1;
+  }
   frame_buf[offset++] = frame->first_byte;
   frame_buf[offset++] = frame->second_byte;
-  if (offset > frame->frame_len)
-    return -1;
 
   if (frame->extended_payload_len) {
+    if (offset + 2 > frame->frame_len) {
+      fprintf(stderr,
+              "caught buffer overflow before allocating extended_payload_len");
+      return -1;
+    }
     frame_buf[offset++] = (frame->extended_payload_len >> 8) & 0xFF;
     frame_buf[offset++] = (frame->extended_payload_len >> 0) & 0xFF;
   }
-  if (offset > frame->frame_len) {
-    return -1;
-  }
+
   if (frame->maybe_mask) {
+    if (offset + 4 > frame->frame_len) {
+      fprintf(stderr, "caught buffer overflow before allocating mask");
+      return -1;
+    }
     for (int i = 3; i >= 0; i--) {
       frame_buf[offset++] = (frame->maybe_mask >> 8 * i) & 0xFF;
     }
   }
-  if (offset + frame->payload_len > frame->frame_len) {
+
+  if (offset + frame->payload_len != frame->frame_len) {
+    fprintf(stderr, "caught buffer overflow before allocating payload");
     return -1;
   }
   for (size_t i = 0; i < frame->payload_len; i++) {
     frame_buf[offset++] = frame->payload[i];
   }
   if (offset != frame->frame_len) {
+    fprintf(stderr, "caught buffer overflow after allocating payload");
     return -1;
   }
   return 0;
@@ -127,8 +136,7 @@ int mask_unmask_payload(ws_frame_t *frame) {
 /* MAIN FUNCTION */
 /* this implementation does not facilitate continuation frames or payloads
  * larger than 65,536 bytes */
-ws_frame_buf_t *ws_encode(const char *input_payload,
-                          const unsigned int should_mask) {
+ws_frame_buf_t *ws_encode(char *input_payload, const unsigned int should_mask) {
   if (!input_payload) {
     return NULL;
   }
@@ -188,21 +196,19 @@ ws_frame_buf_t *ws_encode(const char *input_payload,
   unsigned char *frame_buf = malloc(frame.frame_len);
   if (!frame_buf) {
     fprintf(stderr, "unable to allocate frame_buf");
-    free(frame.payload);
     return NULL;
   }
   if (assemble_frame(frame_buf, &frame) != 0) {
     fprintf(stderr, "Failed to assemble frame");
     free(frame_buf);
-    free(frame.payload);
     return NULL;
   }
 
   // printf("frame:\n");
   // print_binary_bytes(frame_buf, frame.frame_len);
 
-  free(frame.payload);
-  ws_frame_buf_t *encoded_frame = malloc(frame.frame_len + sizeof(int));
+  ws_frame_buf_t *encoded_frame =
+      malloc(frame.frame_len + sizeof(frame.frame_len));
   encoded_frame->frame_buf = frame_buf;
   encoded_frame->len = frame.frame_len;
   return encoded_frame;
