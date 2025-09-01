@@ -43,7 +43,8 @@ typedef struct {
  * @return Pointer to encoded frame buffer, or NULL on error
  * @note Caller must free the returned buffer using free()
  */
-ws_frame_buf_t *ws_encode(char *input_payload, const unsigned int should_mask);
+ws_frame_buf_t *ws_encode(const char *input_payload,
+                          const unsigned int should_mask);
 
 /**
  * Decode a WebSocket frame into a string

@@ -41,7 +41,7 @@ static int get_path(char *recv_buf, char *path) {
 
 void router(int client_fd) {
   if (client_fd < 0) {
-    fprintf(stderr, "invalid client_fd passed to router\n");
+    fprintf(stderr, "Router error: Invalid client_fd\n");
     return;
   }
 
@@ -58,8 +58,8 @@ void router(int client_fd) {
   if (num_bytes >= MAX_RECEIVE_SIZE) {
     char *msg = build_req("Request entity too large", 413);
     if (msg == NULL) {
-      fprintf(stderr,
-              "unable to allocate msg for 'request too large' response\n");
+      fprintf(stderr, "Router error: unable to allocate msg for 'request too "
+                      "large' response\n");
       return;
     }
     if (send(client_fd, msg, strlen(msg), 0) == -1) {
@@ -75,7 +75,6 @@ void router(int client_fd) {
     return;
   }
   recv_buf[num_bytes] = '\0';
-  printf("received from client:\n%s\n", recv_buf);
 
   // route on URL path
   if (get_path(recv_buf, path) != 0) {

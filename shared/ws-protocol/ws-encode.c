@@ -8,13 +8,19 @@
 #include <time.h>
 
 /* HELPER FUNCTIONS */
-void encode_payload(ws_frame_t *frame, char *input_payload) {
+void encode_payload(ws_frame_t *frame, const char *input_payload) {
   if (!input_payload || frame->payload_len <= 0) {
     fprintf(stderr, "payload is NULL or frame.payload_len <= 0");
     return;
   }
 
-  frame->payload = (unsigned char *)input_payload;
+  frame->payload = malloc(frame->payload_len);
+  if (!frame->payload) {
+    fprintf(stderr, "Failed to allocate payload memory");
+    return;
+  }
+
+  memcpy(frame->payload, input_payload, frame->payload_len);
 }
 
 void calculate_frame_len(ws_frame_t *frame) {
@@ -97,7 +103,8 @@ int generate_mask(uint32_t *mask) {
 /* MAIN FUNCTION */
 /* this implementation does not facilitate continuation frames or payloads
  * larger than 65,536 bytes */
-ws_frame_buf_t *ws_encode(char *input_payload, const unsigned int should_mask) {
+ws_frame_buf_t *ws_encode(const char *input_payload,
+                          const unsigned int should_mask) {
   if (!input_payload) {
     return NULL;
   }
@@ -148,6 +155,7 @@ ws_frame_buf_t *ws_encode(char *input_payload, const unsigned int should_mask) {
 
   if (frame.maybe_mask) {
     if (mask_unmask_payload(&frame) != 0) {
+      free(frame.payload);
       return NULL;
     }
   }
@@ -156,11 +164,13 @@ ws_frame_buf_t *ws_encode(char *input_payload, const unsigned int should_mask) {
 
   unsigned char *frame_buf = malloc(frame.frame_len);
   if (!frame_buf) {
+    free(frame.payload);
     fprintf(stderr, "unable to allocate frame_buf");
     return NULL;
   }
   if (assemble_frame(frame_buf, &frame) != 0) {
     fprintf(stderr, "Failed to assemble frame");
+    free(frame.payload);
     free(frame_buf);
     return NULL;
   }
@@ -168,9 +178,15 @@ ws_frame_buf_t *ws_encode(char *input_payload, const unsigned int should_mask) {
   // printf("frame:\n");
   // print_binary_bytes(frame_buf, frame.frame_len);
 
-  ws_frame_buf_t *encoded_frame =
-      malloc(frame.frame_len + sizeof(frame.frame_len));
+  ws_frame_buf_t *encoded_frame = malloc(sizeof(ws_frame_buf_t));
+  if (!encoded_frame) {
+    free(frame.payload);
+    free(frame_buf);
+    fprintf(stderr, "Failed to allocate encoded_frame");
+    return NULL;
+  }
   encoded_frame->frame_buf = frame_buf;
   encoded_frame->len = frame.frame_len;
+  free(frame.payload);
   return encoded_frame;
 }

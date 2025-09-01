@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 #include "ws-protocol/ws.h"
 
 int stream_data(int sock_fd) {
-  char string1[10] = "55555";
+  char string1[6] = "55555\0";
   // char string2[130] = "This will be a 128 byte "
   //                     "string:"
   //                     "lwsiafjliwjelwijclweijflisejfaliwjfalfjailjflaisjefdlasj"
@@ -22,8 +23,7 @@ int stream_data(int sock_fd) {
     return -1;
   }
 
-  printf("frame:\n");
-  print_binary_bytes(ws_frame_buf->frame_buf, ws_frame_buf->len);
+  printf("sending message: %s\n", string1);
 
   send(sock_fd, ws_frame_buf->frame_buf, ws_frame_buf->len, 0);
 

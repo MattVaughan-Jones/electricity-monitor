@@ -80,8 +80,7 @@ static void send_unable_to_find_swk(int client_fd) {
 
 void controller_websocket_connect(char *recv_buf, int client_fd) {
   if (!recv_buf || !client_fd) {
-    fprintf(stderr,
-            "undefined argument passed to controller_websocket_connect\n");
+    fprintf(stderr, "Websocket controller error: undefined argument passed\n");
     return;
   }
 
@@ -93,7 +92,7 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
   char *swk_encoded = malloc(SEC_WEBSOCKET_KEY_SIZE + 1);
   if (swk_encoded == NULL) {
     fprintf(stderr,
-            "failed to allocate swk_encoded in controller_websocket_connect\n");
+            "Websocket controller error: failed to allocate swk_encoded\n");
     return;
   }
 
@@ -105,7 +104,8 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
 
   char *sec_websocket_accept_key = generate_swa(swk_encoded);
   if (sec_websocket_accept_key == NULL) {
-    fprintf(stderr, "failed to allocate sec_websocket_accept_key\n");
+    fprintf(stderr, "Websocket controller error: failed to allocate "
+                    "sec_websocket_accept_key\n");
     free(swk_encoded);
     return;
   }
@@ -114,7 +114,8 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
 
   char *res = ws_connection_upgrade_res(sec_websocket_accept_key);
   if (res == NULL) {
-    fprintf(stderr, "failed to allocate res in controller_websocket_connect\n");
+    fprintf(stderr,
+            "Websocket controller error: failed to allocate response\n");
     free(sec_websocket_accept_key);
     return;
   }
@@ -127,8 +128,8 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
     return;
   }
 
-  handle_websocket_communication(client_fd);
-
   free(sec_websocket_accept_key);
   free(res);
+
+  handle_websocket_communication(client_fd);
 }

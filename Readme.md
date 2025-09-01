@@ -2,7 +2,8 @@ This project contains code for a WS client and a WS server.
 
 # TODO
 
-- consider implementing authentication
+- consider implementing authentication. Could be interesting.
+- consider implementing ping/pong. Decided against it for now.
 
 # How to build for deployment
 
