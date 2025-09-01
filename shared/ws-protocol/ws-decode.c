@@ -194,7 +194,6 @@ int parse_input(ws_frame_t *frame, const unsigned char *input,
   return 0;
 }
 
-/* WS PROTOCOL SUPPORT VALIDATION */
 int check_fin(ws_frame_t *frame) {
   if (!frame) {
     return -1;
@@ -225,7 +224,6 @@ int check_opcode(ws_frame_t *frame) {
   return 0;
 }
 
-/* MAIN FUNCTION */
 char *ws_decode(const unsigned char *input, size_t input_len) {
   if (!input) {
     return NULL;

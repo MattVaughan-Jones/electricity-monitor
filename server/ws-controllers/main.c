@@ -1,10 +1,15 @@
 #include "ws.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 void handle_websocket_communication(int client_fd) {
+  if (client_fd <= 0) {
+    fprintf(stderr, "Websocket controller error: Invalid client_fd");
+    return;
+  }
   unsigned char buffer[1024];
 
   while (1) {
@@ -24,6 +29,7 @@ void handle_websocket_communication(int client_fd) {
       break;
     }
     printf("received message: %s\n", message);
+    free(message);
   }
 
   close(client_fd);
