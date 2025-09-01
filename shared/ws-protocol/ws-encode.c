@@ -1,38 +1,11 @@
-#include "ws-encode.h"
+#include "ws.h"
+
 #include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-typedef struct {
-  unsigned char first_byte;
-  unsigned char second_byte;
-  uint16_t extended_payload_len;
-  uint32_t maybe_mask;
-  unsigned char *payload;
-  size_t payload_len;
-  size_t frame_len;
-} ws_frame_t;
-
-/* DEBUG FUNCTIONS */
-void print_binary_byte(const unsigned char binary) {
-  for (int i = 7; i >= 0; i--) {
-    printf("%d", 1 & (binary >> i));
-  }
-  printf("\n");
-}
-
-void print_binary_bytes(const unsigned char *binary, int num_bytes) {
-  if (!binary || num_bytes <= 0) {
-    return;
-  }
-  for (int byte_index = 0; byte_index < num_bytes; byte_index++) {
-    print_binary_byte(binary[byte_index]);
-  }
-  printf("\n");
-}
 
 /* HELPER FUNCTIONS */
 void encode_payload(ws_frame_t *frame, char *input_payload) {
@@ -118,18 +91,6 @@ int generate_mask(uint32_t *mask) {
   *mask = ((uint32_t)(rand() & 0xFF)) | ((uint32_t)(rand() & 0xFF) << 8) |
           ((uint32_t)(rand() & 0xFF) << 16) | ((uint32_t)(rand() & 0xFF) << 24);
 
-  return 0;
-}
-
-int mask_unmask_payload(ws_frame_t *frame) {
-  if (!frame->payload || frame->payload_len <= 0) {
-    return -1;
-  }
-
-  for (size_t i = 0; i < frame->payload_len; i++) {
-    unsigned char mask_byte = (frame->maybe_mask >> (8 * (3 - i % 4))) & 0xFF;
-    frame->payload[i] ^= mask_byte;
-  }
   return 0;
 }
 

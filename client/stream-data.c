@@ -3,14 +3,25 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "ws-protocol/ws-encode.h"
+#include "ws-protocol/ws.h"
 
-void stream_data(int sock_fd) {
+int stream_data(int sock_fd) {
   char string1[10] = "55555";
-  // char string2[128] = "This will be a 128 byte string:
-  // lwsiafjliwjelwijclweijflisejfaliwjfalfjailjflaisjefdlasjefoajwijlwajijasilfjfijwalefjaseijfeals";
+  // char string2[130] = "This will be a 128 byte "
+  //                     "string:"
+  //                     "lwsiafjliwjelwijclweijflisejfaliwjfalfjailjflaisjefdlasj"
+  //                     "efoajwijlwajijasilfjfijwalefjaseijfealsss";
 
   ws_frame_buf_t *ws_frame_buf = ws_encode(string1, 1);
+  if (!ws_frame_buf->frame_buf) {
+    fprintf(stderr, "failed to allocate frame_buf");
+    return -1;
+  }
+  if (!ws_frame_buf->len) {
+    fprintf(stderr, "failed to allocate len");
+    return -1;
+  }
+
   printf("frame:\n");
   print_binary_bytes(ws_frame_buf->frame_buf, ws_frame_buf->len);
 
@@ -21,4 +32,5 @@ void stream_data(int sock_fd) {
 
   free(ws_frame_buf->frame_buf);
   free(ws_frame_buf);
+  return 0;
 }

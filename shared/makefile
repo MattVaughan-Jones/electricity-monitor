@@ -1,5 +1,5 @@
 CFLAGS ?= -Wall -Wextra -g -MMD
-SRCS = http.c base64.c sha1.c ws-http-keys.c ws-protocol/ws-encode.c
+SRCS = http.c base64.c sha1.c ws-http-keys.c ws-protocol/ws-encode.c ws-protocol/ws-decode.c ws-protocol/ws-util.c
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/shared.a
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
