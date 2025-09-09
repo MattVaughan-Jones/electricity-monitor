@@ -4,6 +4,7 @@ This project contains code for a WS client and a WS server.
 
 - consider implementing authentication. Could be interesting.
 - consider implementing ping/pong. Decided against it for now.
+- Will later need to modify the server so that it doesn't shut down when the client disconnects. Currently it does this when the client calls close(), which sends a 0 payload.
 
 # How to build for deployment
 
