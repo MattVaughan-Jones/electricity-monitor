@@ -1,25 +1,21 @@
 #include <Arduino.h>
 #include <WiFi.h>
-#include <AsyncTCP.h>
 #include <ArduinoJson.h>
 #include "config.h"
+#include "ws.h"
 
 // Global variables
 WiFiClient client;  // Make this global!
 bool connected = false;
+bool recording = false;
 
 // Function declarations
 void connectToWiFi();
 void connectToWebSocket();
 void sendElectricityData();
 void sendWebSocketFrame(WiFiClient& client, const String& message);
-
-// Function to generate a random WebSocket mask
-void generateRandomMask(uint8_t* mask) {
-  for (int i = 0; i < 4; i++) {
-    mask[i] = random(256);
-  }
-}
+String readWebSocketMessage();
+void handleServerCommand(String command);
 
 void setup() {
   Serial.begin(115200);
@@ -39,11 +35,19 @@ void setup() {
 }
 
 void loop() {
-  if (connected) {
+  // Check for incoming WebSocket messages from server
+  if (client.available()) {
+    String message = readWebSocketMessage();
+    if (message.length() > 0) {
+      handleServerCommand(message);
+    }
+  }
+  
+  // Only send data if recording
+  if (connected && recording) {
     sendElectricityData();
   }
   
-  // Send data at regular intervals
   delay(DATA_INTERVAL_MS);
 }
 
@@ -114,55 +118,17 @@ void connectToWebSocket() {
 
 void sendWebSocketFrame(WiFiClient& client, const String& message) {
   if (connected && client.connected()) {
-    int payload_len = message.length();
+    ws_frame_buf_t *frame = ws_encode(message.c_str(), 1);
     
-    // Check if payload is too large for 16-bit length
-    if (payload_len > 65535) {
-      Serial.printf("ERROR: Message too large (%d bytes), maximum supported is 65535 bytes. Skipping message.\n", payload_len);
-      return;
-    }
-    
-    int frame_len;
-    
-    // Calculate frame length
-    if (payload_len <= 125) {
-      frame_len = 2 + 4 + payload_len; // header + mask + payload
+    if (frame && frame->frame_buf) {
+      Serial.printf("Sending data: %s\n", message.c_str());
+      client.write(frame->frame_buf, frame->len);
+      
+      free(frame->frame_buf);
+      free(frame);
     } else {
-      frame_len = 2 + 2 + 4 + payload_len; // header + extended length + mask + payload
+      Serial.println("Failed to encode WebSocket frame");
     }
-    
-    uint8_t frame[frame_len];
-    int frame_position = 0;
-    
-    // Header
-    frame[frame_position++] = 0x81; // FIN + text frame
-    
-    if (payload_len <= 125) {
-      frame[frame_position++] = 0x80 | payload_len; // MASK bit + payload length
-    } else {
-      frame[frame_position++] = 0x80 | 126; // MASK bit + extended length indicator
-      frame[frame_position++] = (payload_len >> 8) & 0xFF; // High byte
-      frame[frame_position++] = payload_len & 0xFF; // Low byte
-    }
-    
-    // Generate a random mask
-    uint8_t mask[4];
-    generateRandomMask(mask);
-
-    // Set mask
-    frame[frame_position++] = mask[0];
-    frame[frame_position++] = mask[1];
-    frame[frame_position++] = mask[2];
-    frame[frame_position++] = mask[3];
-    
-    // Mask and set the message
-    for (int i = 0; i < message.length(); i++) {
-      frame[frame_position++] = message[i] ^ mask[i % 4];
-    }
-    
-    Serial.printf("Sending data: %s\n", message.c_str());
-    
-    client.write(frame, frame_len);
   }
 }
 
@@ -186,5 +152,50 @@ void sendElectricityData() {
     sendWebSocketFrame(client, jsonString);
   } else {
     Serial.println("WebSocket not connected, skipping data transmission");
+  }
+}
+
+String readWebSocketMessage() {
+  if (!client.connected() || !client.available()) {
+    return "";
+  }
+  
+  // Read raw WebSocket frame data
+  uint8_t buffer[1024];
+  int bytes = client.read(buffer, sizeof(buffer));
+  
+  if (bytes <= 0) {
+    return "";
+  }
+  
+  Serial.printf("Received %d bytes from server\n", bytes);
+  
+  // Decode the WebSocket frame using shared library
+  char* message = ws_decode(buffer, bytes);
+  
+  if (!message) {
+    Serial.println("Failed to decode WebSocket message from server");
+    return "";
+  }
+  
+  String result = String(message);
+  free(message); // Important: free the memory allocated by ws_decode
+  
+  Serial.println("Decoded message: " + result);
+  return result;
+}
+
+void handleServerCommand(String command) {
+  StaticJsonDocument<200> doc;
+  deserializeJson(doc, command);
+  
+  String action = doc["action"];
+  
+  if (action == "start_recording") {
+    recording = true;
+    Serial.println("Started recording");
+  } else if (action == "stop_recording") {
+    recording = false;
+    Serial.println("Stopped recording");
   }
 }

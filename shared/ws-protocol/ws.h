@@ -4,6 +4,10 @@
 #ifndef WS_H
 #define WS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * WebSocket Protocol Constants
  */
@@ -74,5 +78,9 @@ void print_binary_byte(const unsigned char binary);
  * @param num_bytes Number of bytes to print
  */
 void print_binary_bytes(const unsigned char *binary, int num_bytes);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,5 +1,12 @@
 This project contains code for a WS client and a WS server.
 
+# How I'd like it to work:
+- user plugs in the device which runs the setup function
+- user accesses the web page, enters the name of the appliance being measured and clicks a "record" button
+- also implement a "stop recording" button
+- server starts receiving data from the ESP32 and sends it to the web page to be displayed as a graph
+- data is stored on the server (this laptop) so the user can go back and look at old recordings
+
 # TODO
 
 - consider implementing authentication. Could be interesting.
