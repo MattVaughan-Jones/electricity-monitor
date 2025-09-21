@@ -29,7 +29,7 @@ export const Graph = ({ powerData }: { powerData: PowerData }) => {
     labels: powerData.data.map(row => row.timestamp),
     datasets: [
       {
-        label: 'Power (W)',
+        label: powerData.device,
         data: powerData.data.map(row => row.power),
       },
     ],
@@ -40,6 +40,7 @@ export const Graph = ({ powerData }: { powerData: PowerData }) => {
     maintainAspectRatio: false,
     scales: {
       x: {
+        beginAtZero: true,
         grid: {
           color: 'white',
         },
@@ -47,10 +48,13 @@ export const Graph = ({ powerData }: { powerData: PowerData }) => {
           color: 'white',
         },
         title: {
+          display: true,
+          text: 'Time',
           color: 'white',
         },
       },
       y: {
+        beginAtZero: true,
         grid: {
           color: 'white',
         },
@@ -58,6 +62,8 @@ export const Graph = ({ powerData }: { powerData: PowerData }) => {
           color: 'white',
         },
         title: {
+          display: true,
+          text: 'Power (W)',
           color: 'white',
         },
       },
@@ -72,7 +78,7 @@ export const Graph = ({ powerData }: { powerData: PowerData }) => {
   }
 
   return (
-    <div>
+    <div style={{ height: '50vh' }}>
       <Line data={data} options={options} />
     </div>
   )

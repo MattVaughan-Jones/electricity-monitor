@@ -24,6 +24,7 @@ char *build_req(char *content, int status_code) {
   char *template = "HTTP/1.1 %s\r\n"
                    "Content-Type: text/plain\r\n"
                    "Connection: close\r\n"
+                   "Access-Control-Allow-Origin: *\r\n"
                    "Content-Length: %d\r\n\r\n"
                    "%s";
 

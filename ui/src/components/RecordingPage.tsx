@@ -1,6 +1,7 @@
 import { powerData } from '../fixtures/power-data'
 import { Graph } from './graph/Graph'
 import { LeftMenu } from './LeftMenu'
+import { StartStop } from './StartStop'
 
 export const Recording = () => {
   return (
@@ -10,6 +11,7 @@ export const Recording = () => {
       </div>
       <div style={{ width: '80%' }}>
         <Graph powerData={powerData} />
+        <StartStop />
       </div>
     </div>
   )

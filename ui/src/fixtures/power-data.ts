@@ -1,4 +1,5 @@
 export type PowerData = {
+  device: string
   data: {
     timestamp: number
     power: number
@@ -6,6 +7,7 @@ export type PowerData = {
 }
 
 export const powerData: PowerData = {
+  device: 'kettle',
   data: [
     {
       timestamp: 0,

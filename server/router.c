@@ -83,6 +83,12 @@ void router(int client_fd) {
   }
   if (strncmp(path, "/websocket-connect", strlen("/websocket-connect")) == 0) {
     controller_websocket_connect(recv_buf, client_fd);
+  } else if (strncmp(path, "/start-recording", strlen("/start-recording")) == 0) {
+    // TODO - will need to actually start the device
+    controller_default(client_fd);
+  } else if (strncmp(path, "/start-recording", strlen("/start-recording")) == 0) {
+    // TODO - will need to actually stop the device
+    controller_default(client_fd);
   } else {
     controller_default(client_fd);
   }
