@@ -2,6 +2,7 @@
 #include "../ws-controllers/main.h"
 #include "http.h"
 #include "ws-http-keys.h"
+#include "../ipc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -130,6 +131,8 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
 
   free(sec_websocket_accept_key);
   free(res);
+
+  *ws_fd = client_fd;
 
   handle_websocket_communication(client_fd);
 }

@@ -12,6 +12,8 @@ This project contains code for a WS client and a WS server.
 - consider implementing authentication. Could be interesting.
 - consider implementing ping/pong. Decided against it for now.
 - Will later need to modify the server so that it doesn't shut down when the client disconnects. Currently it does this when the client calls close(), which sends a 0 payload.
+- Reset the ws_fd to -1 when the ESP32 disconnects -> prevent sending a message when there's nothing to receive it. Can also use this to show a "connected" indicator in the ui
+- I'm currently keeping all file descriptors in the server. Could implement connection pooling or proper connection lifecycle to close connections that aren't used. This can be ignored for now.
 
 # How to build for deployment
 

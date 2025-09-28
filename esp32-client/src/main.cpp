@@ -5,17 +5,16 @@
 #include "ws.h"
 
 // Global variables
-WiFiClient client;  // Make this global!
-bool connected = false;
+WiFiClient wifiClient;  // Make this global!
 bool recording = false;
 
 // Function declarations
 void connectToWiFi();
 void connectToWebSocket();
 void sendElectricityData();
-void sendWebSocketFrame(WiFiClient& client, const String& message);
+void sendWebSocketFrame(WiFiClient& wifiClient, const String& message);
 String readWebSocketMessage();
-void handleServerCommand(String command);
+void handleIncomingMessage(String message);
 
 void setup() {
   Serial.begin(115200);
@@ -25,26 +24,30 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
   
-  // Connect to WiFi
   connectToWiFi();
   
-  // Connect to WebSocket
   connectToWebSocket();
   
   Serial.println("Setup complete!");
 }
 
 void loop() {
+  if (!wifiClient.connected()) {
+    printf("WiFi client disconnected!\n");
+    return;
+  }
+  
   // Check for incoming WebSocket messages from server
-  if (client.available()) {
+  if (wifiClient.available()) {
     String message = readWebSocketMessage();
+    printf("Message from server: %s\n", message.c_str());
     if (message.length() > 0) {
-      handleServerCommand(message);
+      handleIncomingMessage(message);
     }
   }
   
   // Only send data if recording
-  if (connected && recording) {
+  if (wifiClient.connected() && recording) {
     sendElectricityData();
   }
   
@@ -71,7 +74,7 @@ void connectToWiFi() {
 }
 
 void connectToWebSocket() {
-  if (client.connect(SERVER_HOST, SERVER_PORT)) {
+  if (wifiClient.connect(SERVER_HOST, SERVER_PORT)) {
     Serial.println("TCP connected, initiating WebSocket handshake...");
     
     // Generate WebSocket key
@@ -86,14 +89,15 @@ void connectToWebSocket() {
     request += "Sec-WebSocket-Version: 13\r\n";
     request += "\r\n";
     
-    client.print(request); // Send to server
+    Serial.println("Sending ws upgrade req to server");
+    wifiClient.print(request); // Send to server
     
     // Read response
     String response = "";
     unsigned long timeout = millis() + 5000;
-    while (millis() < timeout && client.connected()) {
-      if (client.available()) {
-        char c = client.read();
+    while (millis() < timeout && wifiClient.connected()) {
+      if (wifiClient.available()) {
+        char c = wifiClient.read();
         response += c;
         if (response.indexOf("\r\n\r\n") != -1) {
           break;
@@ -104,25 +108,24 @@ void connectToWebSocket() {
     // Check if upgrade was successful
     // Don't bother checking the Sec-Websocket-Accept value
     if (response.indexOf("101 Switching Protocols") != -1) {
-      connected = true;
       Serial.println("WebSocket connection established!");
     } else {
       Serial.println("WebSocket handshake failed");
       Serial.println("Response: " + response);
-      client.stop();
+      wifiClient.stop();
     }
   } else {
     Serial.println("Failed to connect to server");
   }
 }
 
-void sendWebSocketFrame(WiFiClient& client, const String& message) {
-  if (connected && client.connected()) {
+void sendWebSocketFrame(WiFiClient& wifiClient, const String& message) {
+  if (wifiClient.connected()) {
     ws_frame_buf_t *frame = ws_encode(message.c_str(), 1);
     
     if (frame && frame->frame_buf) {
       Serial.printf("Sending data: %s\n", message.c_str());
-      client.write(frame->frame_buf, frame->len);
+      wifiClient.write(frame->frame_buf, frame->len);
       
       free(frame->frame_buf);
       free(frame);
@@ -133,7 +136,7 @@ void sendWebSocketFrame(WiFiClient& client, const String& message) {
 }
 
 void sendElectricityData() {
-  if (connected) {
+  if (wifiClient.connected()) {
     // Create JSON payload with electricity data
     StaticJsonDocument<300> doc;
     doc["device_id"] = "esp32_client";
@@ -149,28 +152,20 @@ void sendElectricityData() {
     String jsonString;
     serializeJson(doc, jsonString);
     
-    sendWebSocketFrame(client, jsonString);
+    sendWebSocketFrame(wifiClient, jsonString);
   } else {
     Serial.println("WebSocket not connected, skipping data transmission");
   }
 }
 
 String readWebSocketMessage() {
-  if (!client.connected() || !client.available()) {
-    return "";
-  }
-  
-  // Read raw WebSocket frame data
   uint8_t buffer[1024];
-  int bytes = client.read(buffer, sizeof(buffer));
+  int bytes = wifiClient.read(buffer, sizeof(buffer));
   
   if (bytes <= 0) {
     return "";
   }
   
-  Serial.printf("Received %d bytes from server\n", bytes);
-  
-  // Decode the WebSocket frame using shared library
   char* message = ws_decode(buffer, bytes);
   
   if (!message) {
@@ -179,16 +174,15 @@ String readWebSocketMessage() {
   }
   
   String result = String(message);
-  free(message); // Important: free the memory allocated by ws_decode
+  free(message);
   
-  Serial.println("Decoded message: " + result);
   return result;
 }
 
-void handleServerCommand(String command) {
+void handleIncomingMessage(String message) {
   StaticJsonDocument<200> doc;
-  deserializeJson(doc, command);
-  
+  deserializeJson(doc, message);
+
   String action = doc["action"];
   
   if (action == "start_recording") {

@@ -1,4 +1,5 @@
 #include "router.h"
+#include "ipc.h"
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -11,9 +12,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <signal.h>
+#include <sys/mman.h>
 
 #define PORT "8080"
 #define BACKLOG 1
+
+int *ws_fd;
 
 void sigchld_handler(int s)
 {
@@ -53,6 +57,13 @@ int main(void)
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = 0;
   hints.ai_flags = AI_PASSIVE;
+
+  ws_fd = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+  if (ws_fd == MAP_FAILED) {
+    perror("mmap failed");
+    exit(1);
+  }
+  *ws_fd = -1; // Initialise to -1 to indicate no fd assigned
 
   if ((getaddrinfo_status = getaddrinfo(NULL, PORT, &hints, &server_info)) !=
       0)
@@ -117,10 +128,8 @@ int main(void)
     if (!fork()) { // this is the child process
       close(sock_fd); // child doesn't need the listener
       (void)router(new_fd);
-      close(new_fd);
       exit(0);
     }
-    close(new_fd);  // parent doesn't need this
   }
   close(sock_fd);
 

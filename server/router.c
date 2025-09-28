@@ -2,6 +2,7 @@
 #include "controllers/internal_server_error.h"
 #include "controllers/websocket_connect.h"
 #include "http.h"
+#include "controllers/device_control.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,11 +85,9 @@ void router(int client_fd) {
   if (strncmp(path, "/websocket-connect", strlen("/websocket-connect")) == 0) {
     controller_websocket_connect(recv_buf, client_fd);
   } else if (strncmp(path, "/start-recording", strlen("/start-recording")) == 0) {
-    // TODO - will need to actually start the device
-    controller_default(client_fd);
-  } else if (strncmp(path, "/start-recording", strlen("/start-recording")) == 0) {
-    // TODO - will need to actually stop the device
-    controller_default(client_fd);
+    controller_start_recording(client_fd);
+  } else if (strncmp(path, "/stop-recording", strlen("/stop-recording")) == 0) {
+    controller_stop_recording(client_fd);
   } else {
     controller_default(client_fd);
   }
