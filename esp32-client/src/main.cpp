@@ -40,18 +40,20 @@ void loop() {
   // Check for incoming WebSocket messages from server
   if (wifiClient.available()) {
     String message = readWebSocketMessage();
-    printf("Message from server: %s\n", message.c_str());
     if (message.length() > 0) {
+      Serial.printf("Message from server: %s\n", message.c_str());
       handleIncomingMessage(message);
     }
   }
   
-  // Only send data if recording
-  if (wifiClient.connected() && recording) {
+  // Only send data if recording (less frequent)
+  static unsigned long lastDataTime = 0;
+  if (wifiClient.connected() && recording && (millis() - lastDataTime >= DATA_INTERVAL_MS)) {
     sendElectricityData();
+    lastDataTime = millis();
   }
   
-  delay(DATA_INTERVAL_MS);
+  delay(100);
 }
 
 void connectToWiFi() {
@@ -184,7 +186,15 @@ void handleIncomingMessage(String message) {
   deserializeJson(doc, message);
 
   String action = doc["action"];
+  String type = doc["type"];
   
+  // Handle ping/pong messages
+  if (type == "ping") {
+    sendWebSocketFrame(wifiClient, "{\"type\":\"pong\"}");
+    return;
+  }
+  
+  // Handle action messages
   if (action == "start_recording") {
     recording = true;
     Serial.println("Started recording");

@@ -79,6 +79,38 @@ void print_binary_byte(const unsigned char binary);
  */
 void print_binary_bytes(const unsigned char *binary, int num_bytes);
 
+/**
+ * Ping/Pong Functions
+ */
+
+/**
+ * Send a ping message to the client
+ * @param client_fd The client socket file descriptor
+ * @return 0 on success, -1 on failure
+ */
+int send_ping(int client_fd);
+
+/**
+ * Check if a message is a pong response
+ * @param message The message to check
+ * @return 1 if it's a pong, 0 otherwise
+ */
+int check_is_pong(const char *message);
+
+/**
+ * Check if a message is a ping request
+ * @param message The message to check
+ * @return 1 if it's a ping, 0 otherwise
+ */
+int check_is_ping(const char *message);
+
+/**
+ * Send a pong response to the client
+ * @param client_fd The client socket file descriptor
+ * @return 0 on success, -1 on failure
+ */
+int send_pong(int client_fd);
+
 #ifdef __cplusplus
 }
 #endif
