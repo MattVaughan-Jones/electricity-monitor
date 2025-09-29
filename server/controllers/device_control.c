@@ -5,10 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
-#include <errno.h>    // Required for errno
-#include <fcntl.h>    // Required for fcntl
-#include <sys/time.h> // Required for struct timeval
-#include <string.h>   // Required for strerror
+#include <string.h>
 
 void controller_start_recording(int client_fd)
 {
@@ -27,17 +24,18 @@ void controller_start_recording(int client_fd)
   if (!ws_frame_buf || !ws_frame_buf->frame_buf || !ws_frame_buf->len)
   {
     fprintf(stderr, "failed to allocate len\n");
-    if (ws_frame_buf->frame_buf) {
+    if (ws_frame_buf->frame_buf)
+    {
       free(ws_frame_buf->frame_buf);
     }
     if (ws_frame_buf)
-    {free(ws_frame_buf);}
+    {
+      free(ws_frame_buf);
+    }
     error_msg = "Internal server error";
     status = 500;
     goto failed_to_start;
   }
-
-  printf("sending start_recording signal\n");
 
   int bytes_sent = send(*ws_fd, ws_frame_buf->frame_buf, ws_frame_buf->len, 0);
   if (bytes_sent < 0)
@@ -103,11 +101,14 @@ void controller_stop_recording(int client_fd)
   if (!ws_frame_buf || !ws_frame_buf->frame_buf || !ws_frame_buf->len)
   {
     fprintf(stderr, "failed to allocate len\n");
-    if (ws_frame_buf->frame_buf) {
+    if (ws_frame_buf->frame_buf)
+    {
       free(ws_frame_buf->frame_buf);
     }
     if (ws_frame_buf)
-    {free(ws_frame_buf);}
+    {
+      free(ws_frame_buf);
+    }
     error_msg = "Internal server error";
     status = 500;
     goto failed_to_stop;
