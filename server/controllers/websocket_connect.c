@@ -1,6 +1,7 @@
 #include "../validators.h"
 #include "../ws-controllers/main.h"
-#include "http.h"
+#include "http-util.h"
+#include "../http/http.h"
 #include "ws-http-keys.h"
 #include "../ipc.h"
 
@@ -45,40 +46,6 @@ static int get_swk_from_header(char *swk_encoded, char *recv_buf) {
   return result;
 }
 
-static void send_invalid_req_response(int client_fd) {
-  char *msg = build_req("Invalid web socket connection request\n", 400);
-  if (msg == NULL) {
-    fprintf(stderr, "failed to allocate msg in controller_websocket_connect "
-                    "for failed validation\n");
-    return;
-  }
-
-  int message_len = strlen(msg);
-  if (send(client_fd, msg, message_len, 0) == -1) {
-    perror("send");
-    return;
-  }
-  free(msg);
-}
-
-static void send_unable_to_find_swk(int client_fd) {
-  char *response = "Internal server error: unable to find Sec-Websocket-Key";
-  char *msg = build_req(response, 500);
-  if (msg == NULL) {
-    fprintf(stderr, "failed to allocate msg in "
-                    "controller_websocket_connect for parsing header\n");
-    return;
-  }
-
-  int message_len = strlen(msg);
-  if (send(client_fd, msg, message_len, 0) == -1) {
-    perror("send");
-    free(msg);
-    return;
-  }
-  free(msg);
-}
-
 void controller_websocket_connect(char *recv_buf, int client_fd) {
   if (!recv_buf || !client_fd) {
     fprintf(stderr, "Websocket controller error: undefined argument passed\n");
@@ -86,7 +53,7 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
   }
 
   if (validate_sock_con_req(recv_buf) != 0) {
-    send_invalid_req_response(client_fd);
+    send_response(client_fd, "Invalid web socket connection request", 400);
     return;
   }
 
@@ -98,7 +65,7 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
   }
 
   if (get_swk_from_header(swk_encoded, recv_buf) != 0) {
-    send_unable_to_find_swk(client_fd);
+    send_response(client_fd, "Internal server error: unable to find Sec-Websocket-Key", 500);
     free(swk_encoded);
     return;
   }

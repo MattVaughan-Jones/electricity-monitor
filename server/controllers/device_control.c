@@ -1,6 +1,7 @@
 #include "../ipc.h"
 #include "ws.h"
-#include "http.h"
+#include "http-util.h"
+#include "../http/http.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,35 +52,12 @@ void controller_start_recording(int client_fd)
   free(ws_frame_buf->frame_buf);
   free(ws_frame_buf);
 
-  char *success_res = build_req("recording started", 200);
-  if (success_res == NULL)
-  {
-    fprintf(stderr, "unable to construct 'recording started' response\n");
-    return;
-  }
-  if (send(client_fd, success_res, strlen(success_res), 0) == -1)
-  {
-    perror("send");
-    free(success_res);
-    return;
-  }
+  send_response(client_fd, "recording started", 200);
   return;
 
 failed_to_start:
 {
-  char *msg = build_req(error_msg, status);
-  if (msg == NULL)
-  {
-    fprintf(stderr, "unable to build failed_to_start response message\n");
-    return;
-  }
-  if (send(client_fd, msg, strlen(msg), 0) == -1)
-  {
-    perror("send");
-    free(msg);
-    return;
-  }
-  free(msg);
+  send_response(client_fd, error_msg, status);
   return;
 }
 }
@@ -130,36 +108,12 @@ void controller_stop_recording(int client_fd)
   free(ws_frame_buf->frame_buf);
   free(ws_frame_buf);
 
-  char *success_res = build_req("recording stopped", 200);
-  if (success_res == NULL)
-  {
-    fprintf(stderr, "unable to construct 'recording stoped' response\n");
-    return;
-  }
-  if (send(client_fd, success_res, strlen(success_res), 0) == -1)
-  {
-    perror("send");
-    free(success_res);
-    return;
-  }
-  free(success_res);
+  send_response(client_fd, "recording stopped", 200);
   return;
 
 failed_to_stop:
 {
-  char *msg = build_req(error_msg, status);
-  if (msg == NULL)
-  {
-    fprintf(stderr, "unable to build failed_to_stop response message\n");
-    return;
-  }
-  if (send(client_fd, msg, strlen(msg), 0) == -1)
-  {
-    perror("send");
-    free(msg);
-    return;
-  }
-  free(msg);
+  send_response(client_fd, error_msg, status);
   return;
 }
 }

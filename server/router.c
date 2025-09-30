@@ -1,7 +1,6 @@
-#include "controllers/default.h"
-#include "controllers/internal_server_error.h"
 #include "controllers/websocket_connect.h"
-#include "http.h"
+#include "http-util.h"
+#include "http/http.h"
 #include "controllers/device_control.h"
 
 #include <stdio.h>
@@ -11,12 +10,25 @@
 
 #define MAX_RECEIVE_SIZE 1024
 
-static int get_path(char *recv_buf, char *path) {
-  if (!recv_buf || !path) {
+// Helper function to safely compare paths with bounds checking
+static int path_matches(const char* path, const char* expected) {
+    if (!path || !expected) {
+        return 0;
+    }
+    
+    if (strlen(path) != strlen(expected)) {
+        return 0;
+    }
+    
+    return strcmp(path, expected) == 0;
+}
+
+static int get_path_and_method(char *recv_buf, char *path, char *method) {
+  if (!recv_buf || !path || !method) {
     fprintf(stderr, "undefined argument passed to get_path\n");
     return 1;
   }
-  char method[10], version[20], first_line[256];
+  char version[20], first_line[256];
 
   char *newline = strchr(recv_buf, '\n');
   if (!newline)
@@ -47,28 +59,18 @@ void router(int client_fd) {
   }
 
   char path[256];
+  char method[10];
   char recv_buf[MAX_RECEIVE_SIZE];
 
   // receive the incoming message
   int num_bytes;
   if ((num_bytes = recv(client_fd, recv_buf, MAX_RECEIVE_SIZE, 0)) == -1) {
     perror("recv");
-    internal_server_error(client_fd, "failed to receive data");
+    send_response(client_fd, "Internal server error: failed to receive data", 500);
     return;
   }
   if (num_bytes >= MAX_RECEIVE_SIZE) {
-    char *msg = build_req("Request entity too large", 413);
-    if (msg == NULL) {
-      fprintf(stderr, "Router error: unable to allocate msg for 'request too "
-                      "large' response\n");
-      return;
-    }
-    if (send(client_fd, msg, strlen(msg), 0) == -1) {
-      perror("send");
-      free(msg);
-      return;
-    }
-    free(msg);
+    send_response(client_fd, "Request entity too large", 413);
     return;
   }
   if (num_bytes == 0) {
@@ -78,17 +80,33 @@ void router(int client_fd) {
   recv_buf[num_bytes] = '\0';
 
   // route on URL path
-  if (get_path(recv_buf, path) != 0) {
-    internal_server_error(client_fd, "unable to parse path");
+  if (get_path_and_method(recv_buf, path, method) != 0) {
+    send_response(client_fd, "Internal server error: unable to parse path", 500);
     return;
   }
-  if (strncmp(path, "/websocket-connect", strlen("/websocket-connect")) == 0) {
-    controller_websocket_connect(recv_buf, client_fd);
-  } else if (strncmp(path, "/start-recording", strlen("/start-recording")) == 0) {
-    controller_start_recording(client_fd);
-  } else if (strncmp(path, "/stop-recording", strlen("/stop-recording")) == 0) {
-    controller_stop_recording(client_fd);
+  // TODO - implement standard 405 responses below
+  if (path_matches(path, "/websocket-connect")) {
+    if (strncmp(method, "GET", strlen("GET")) == 0) {
+      controller_websocket_connect(recv_buf, client_fd);
+    }
+    else {
+      send_405_response(client_fd);
+    }
+  } else if (path_matches(path, "/start-recording")) {
+    if (strncmp(method, "POST", strlen("POST")) == 0) {
+      controller_start_recording(client_fd);
+    }
+    else {
+      send_405_response(client_fd);
+    }
+  } else if (path_matches(path, "/stop-recording")) {
+    if (strncmp(method, "GET", strlen("GET")) == 0) {
+      controller_stop_recording(client_fd);
+    }
+    else {
+      send_405_response(client_fd);
+    }
   } else {
-    controller_default(client_fd);
+    send_404_response(client_fd);
   }
 }

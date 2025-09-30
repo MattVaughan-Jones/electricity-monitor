@@ -1,3 +1,21 @@
+# Current PR TODO
+
+- Send a recording name from client to server - done
+- Refactor more things to use send_response() instead of having lots of places build_req - done
+
+Next
+- Update server to handle POST request with the recording name
+- If name is an empty string, server sets a default
+
+Next:
+- change ws_fd shared memory to a struct which now also holds the filename of the current recording
+    - Set the filename when receiving the start instruction from UI
+    - Delete the filename when receiving the stop instruction from UI
+
+Next:
+- Create a new file when receiving a new filename
+- Continuously write incoming data to that file
+
 This project contains code for a WS client and server, and a UI to control the client.
 
 # How I'd like it to work:

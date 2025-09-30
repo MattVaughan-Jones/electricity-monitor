@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "http.h"
+#include "http-util.h"
 
 int validate_wsa_res(const char *res, const char *sec_websocket_key) {
   if (!res || !sec_websocket_key)

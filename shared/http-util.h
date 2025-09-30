@@ -1,5 +1,5 @@
-#ifndef http_H
-#define http_H
+#ifndef HTTP_UTIL_H
+#define HTTP_UTIL_H
 
 char *build_req(char *response, int status_code);
 
