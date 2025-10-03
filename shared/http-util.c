@@ -8,6 +8,14 @@ char *get_status_line(int status_code) {
     return "200 OK";
   case 400:
     return "400 Bad Request";
+  case 404:
+    return "404 Not Found";
+  case 405:
+    return "405 Method Not Allowed";
+  case 409:
+    return "409 Conflict";
+  case 413:
+    return "413 Request Entity Too Large";
   case 500:
     return "500 Internal Server Error";
   default:

@@ -42,7 +42,9 @@ void handle_websocket_communication(int client_fd)
       if (bytes <= 0)
       {
         printf("ESP32 disconnected (connection closed)\n");
-        *ws_fd = -1;
+        shared_mem->ws_fd = -1;
+        memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN);
+        printf("recording_name after disconnect: %s\n", shared_mem->recording_name);
         break;
       }
 
@@ -72,7 +74,8 @@ void handle_websocket_communication(int client_fd)
       if (send_ping(client_fd) < 0)
       {
         printf("Ping send from server failed. Disconnecting WS client\n");
-        *ws_fd = -1;
+        shared_mem->ws_fd = -1;
+        memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN);
         break;
       }
       last_ping_time = now;
@@ -82,7 +85,8 @@ void handle_websocket_communication(int client_fd)
     if (now - last_pong_time >= PONG_TIMEOUT)
     {
       printf("ESP32 disconnected - no pong response for %d seconds\n", PONG_TIMEOUT);
-      *ws_fd = -1;
+      shared_mem->ws_fd = -1;
+      memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN);
       break;
     }
   }

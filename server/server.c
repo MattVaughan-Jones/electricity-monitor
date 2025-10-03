@@ -17,7 +17,7 @@
 #define PORT "8080"
 #define BACKLOG 1
 
-int *ws_fd;
+struct ws_ipc_t *shared_mem = NULL;
 
 void sigchld_handler(int s)
 {
@@ -58,12 +58,13 @@ int main(void)
   hints.ai_protocol = 0;
   hints.ai_flags = AI_PASSIVE;
 
-  ws_fd = mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-  if (ws_fd == MAP_FAILED) {
+  shared_mem = mmap(NULL, sizeof(struct ws_ipc_t), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+  if (shared_mem == MAP_FAILED) {
     perror("mmap failed");
     exit(1);
   }
-  *ws_fd = -1; // Initialise to -1 to indicate no fd assigned
+  shared_mem->ws_fd = -1; // Initialise to -1 to indicate no fd assigned
+  strcpy(shared_mem->recording_name, ""); // Initialise to empty string
 
   if ((getaddrinfo_status = getaddrinfo(NULL, PORT, &hints, &server_info)) !=
       0)
