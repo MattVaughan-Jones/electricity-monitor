@@ -1,7 +1,7 @@
 CFLAGS ?= -Wall -Wextra -g -MMD -fsanitize=address -I../shared -I../shared/ws-protocol
 CONTROLLER_SRCS = $(wildcard controllers/*.c) $(wildcard ws-controllers/*.c)
 CORE_SRCS = server.c router.c validators.c
-SRCS = $(CORE_SRCS) $(CONTROLLER_SRCS) $(wildcard http/*.c)
+SRCS = $(CORE_SRCS) $(CONTROLLER_SRCS) $(wildcard http/*.c) $(wildcard data/*.c)
 BUILD_DIR = build
 SHARED = ../shared/build/shared.a
 TARGET = $(BUILD_DIR)/server

@@ -1,10 +1,20 @@
 # Current PR TODO
 
-    - Delete the filename when receiving the stop instruction from UI
-
 Next:
-- Create a new file when receiving a new filename
+- Make sure I can start/stop multiple times and it creates multiple files, without restarting the server
+- Refactor
+    - move all data/fs-related stuff to a module
+    - move set_recording_name out of device_control.c
+    - other?
+Next:
 - Continuously write incoming data to that file
+Next
+If I was to return any data to the client:
+- Modify your program to improve the path-parsing logic to handle folders, and handle responses appropriately.
+- Modify the permissions on a few dummy folders and files to make their read permissions forbidden to your server program. Implement the 403 response appropriately.
+- Parse uri such that it does not allow malicious folder navigation using "..".
+- Modify your path-parsing to strip out (and handle) any troublesome characters.
+- Handle (ignore) query strings and fragments. (? and #).
 
 This project contains code for a WS client and server, and a UI to control the client.
 

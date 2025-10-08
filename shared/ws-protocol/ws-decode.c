@@ -133,8 +133,6 @@ int set_payload(ws_frame_t *frame, const unsigned char *input) {
   return 0;
 }
 
-// TODO - update existing mask_unmask_payload() to this improved version
-
 int parse_input(ws_frame_t *frame, const unsigned char *input,
                 size_t input_len) {
   if (!frame || !input || input_len < WS_FRAME_HEADER_SIZE_2) {

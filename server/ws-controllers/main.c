@@ -1,5 +1,6 @@
 #include "ws.h"
 #include "../ipc.h"
+#include "../data/data.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,28 @@
 #include <poll.h>
 #include <time.h>
 #include <string.h>
+
+FILE *file;
+
+void process_incoming_data(char *message) {
+  if (!message) {
+    fprintf(stderr, "message passed to process_incoming_data is NULL\n");
+    return;
+  }
+  // use file_path from shared memory (set by controller at start)
+  if (shared_mem->file_path[0] == '\0') {
+    fprintf(stderr, "file_path not set in shared memory; cannot open file for writing\n");
+    return;
+  }
+  printf("file path: %s\n", shared_mem->file_path);
+
+  if (!file) {
+    file = make_file(shared_mem->file_path);
+  }
+
+  // TODO - If the file exists, write data to it
+  printf("message: %s", message);
+}
 
 void handle_websocket_communication(int client_fd)
 {
@@ -42,9 +65,6 @@ void handle_websocket_communication(int client_fd)
       if (bytes <= 0)
       {
         printf("ESP32 disconnected (connection closed)\n");
-        shared_mem->ws_fd = -1;
-        memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN);
-        printf("recording_name after disconnect: %s\n", shared_mem->recording_name);
         break;
       }
 
@@ -60,9 +80,12 @@ void handle_websocket_communication(int client_fd)
       {
         last_pong_time = now;
       }
-      else
+      else if (check_is_electricity_data(message))
       {
+        process_incoming_data(message);
         printf("received message: %s\n", message);
+      } else {
+        fprintf(stderr, "WS controller received unrecognised message\n");
       }
 
       free(message);
@@ -74,8 +97,6 @@ void handle_websocket_communication(int client_fd)
       if (send_ping(client_fd) < 0)
       {
         printf("Ping send from server failed. Disconnecting WS client\n");
-        shared_mem->ws_fd = -1;
-        memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN);
         break;
       }
       last_ping_time = now;
@@ -85,11 +106,13 @@ void handle_websocket_communication(int client_fd)
     if (now - last_pong_time >= PONG_TIMEOUT)
     {
       printf("ESP32 disconnected - no pong response for %d seconds\n", PONG_TIMEOUT);
-      shared_mem->ws_fd = -1;
-      memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN);
       break;
     }
   }
+
+  // Reset state
+  shared_mem->ws_fd = -1; // reset websocket file descriptor
+  memset(shared_mem->file_path, 0, MAX_FILE_PATH_LEN); // wipe file_path
 
   close(client_fd);
   exit(0); // Exit the forked process

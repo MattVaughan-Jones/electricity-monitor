@@ -59,6 +59,7 @@ void sendElectricityData() {
   if (wifiClient.connected()) {
     // Create JSON payload with electricity data
     StaticJsonDocument<300> doc;
+    doc["type"] = "data";
     doc["timestamp"] = millis();
     
     // Simulate sensor readings (replace with actual sensor code)

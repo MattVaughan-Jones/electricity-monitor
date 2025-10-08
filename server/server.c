@@ -64,7 +64,7 @@ int main(void)
     exit(1);
   }
   shared_mem->ws_fd = -1; // Initialise to -1 to indicate no fd assigned
-  strcpy(shared_mem->recording_name, ""); // Initialise to empty string
+  memset(shared_mem->file_path, 0, MAX_FILE_PATH_LEN); // Initialise to empty string
 
   if ((getaddrinfo_status = getaddrinfo(NULL, PORT, &hints, &server_info)) !=
       0)
