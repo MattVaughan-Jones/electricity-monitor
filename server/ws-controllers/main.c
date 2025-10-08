@@ -11,7 +11,26 @@
 #include <time.h>
 #include <string.h>
 
-FILE *file;
+FILE *file = NULL;
+char current_file_path[MAX_FILE_PATH_LEN] = {0};
+
+void maybe_create_new_recording() {
+  // Check if we need to open a new file (new recording started)
+  if (!file || strcmp(current_file_path, shared_mem->file_path) != 0) {
+    // Close old file if it exists
+    if (file) {
+      fclose(file);
+      file = NULL;
+    }
+    
+    // Open new file for the new recording
+    file = make_file(shared_mem->file_path);
+    if (file) {
+      strncpy(current_file_path, shared_mem->file_path, MAX_FILE_PATH_LEN - 1);
+      current_file_path[MAX_FILE_PATH_LEN - 1] = '\0';
+    }
+  }
+}
 
 void process_incoming_data(char *message) {
   if (!message) {
@@ -23,14 +42,15 @@ void process_incoming_data(char *message) {
     fprintf(stderr, "file_path not set in shared memory; cannot open file for writing\n");
     return;
   }
-  printf("file path: %s\n", shared_mem->file_path);
 
-  if (!file) {
-    file = make_file(shared_mem->file_path);
+  maybe_create_new_recording();
+
+  // Write data to the file
+  if (file) {
+    fprintf(file, "%s\n", message);
+    fflush(file);
+    printf("Wrote message to file: %s\n", message);
   }
-
-  // TODO - If the file exists, write data to it
-  printf("message: %s", message);
 }
 
 void handle_websocket_communication(int client_fd)
@@ -53,7 +73,7 @@ void handle_websocket_communication(int client_fd)
     pfd.fd = client_fd;
     pfd.events = POLLIN; // Monitor for incoming data
 
-    int result = poll(&pfd, 1, 200); // timeout in ms
+    int result = poll(&pfd, 1, 50); // timeout in ms - shorter for faster disconnection detection
 
     time_t now = time(NULL);
 
@@ -112,7 +132,9 @@ void handle_websocket_communication(int client_fd)
 
   // Reset state
   shared_mem->ws_fd = -1; // reset websocket file descriptor
+  shared_mem->ws_pid = -1; // reset websocket process ID
   memset(shared_mem->file_path, 0, MAX_FILE_PATH_LEN); // wipe file_path
+  memset(current_file_path, 0, MAX_FILE_PATH_LEN); // Reset current file path
 
   close(client_fd);
   exit(0); // Exit the forked process

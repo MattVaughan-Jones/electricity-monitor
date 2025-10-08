@@ -64,6 +64,7 @@ int main(void)
     exit(1);
   }
   shared_mem->ws_fd = -1; // Initialise to -1 to indicate no fd assigned
+  shared_mem->ws_pid = -1; // Initialise to -1 to indicate no process assigned
   memset(shared_mem->file_path, 0, MAX_FILE_PATH_LEN); // Initialise to empty string
 
   if ((getaddrinfo_status = getaddrinfo(NULL, PORT, &hints, &server_info)) !=

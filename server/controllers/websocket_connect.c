@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 static int get_swk_from_header(char *swk_encoded, char *recv_buf) {
   if (!swk_encoded || !recv_buf) {
@@ -99,7 +102,14 @@ void controller_websocket_connect(char *recv_buf, int client_fd) {
   free(sec_websocket_accept_key);
   free(res);
 
+  // Kill any existing WebSocket process before starting a new one
+  if (shared_mem->ws_pid != -1) {
+    kill(shared_mem->ws_pid, SIGTERM);
+    waitpid(shared_mem->ws_pid, NULL, 0); // Wait for it to exit
+  }
+  
   shared_mem->ws_fd = client_fd;
+  shared_mem->ws_pid = getpid(); // Set current process ID
 
   handle_websocket_communication(client_fd);
 }
