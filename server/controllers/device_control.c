@@ -46,22 +46,29 @@ int set_recording_name(char *body)
 
   if (recording_name_len == 0)
   {
+    // Set recording name to "unnamed"
+    strncpy(shared_mem->recording_name, "unnamed", MAX_RECORDING_NAME_LEN - 1);
+    shared_mem->recording_name[MAX_RECORDING_NAME_LEN - 1] = '\0';
+    
     // TODO - extract all file ops to a separate module
     char *file_path = build_file_path("unnamed");
     if (!file_path) return -1;
     strncpy(shared_mem->file_path, file_path, MAX_FILE_PATH_LEN - 1);
     free(file_path);
+  } else {
+    strncpy(shared_mem->recording_name, start_of_recording_name, recording_name_len);
+    shared_mem->recording_name[recording_name_len] = '\0';
+    
+    char name_buf[MAX_RECORDING_NAME_LEN + 1];
+    strncpy(name_buf, start_of_recording_name, recording_name_len);
+    // create name_buf so that we gaurantee passing a null terminated string to build_file_path
+    name_buf[recording_name_len] = '\0';
+    char *file_path = build_file_path(name_buf);
+    if (!file_path) return -1;
+    strncpy(shared_mem->file_path, file_path, MAX_FILE_PATH_LEN - 1);
+    shared_mem->file_path[MAX_FILE_PATH_LEN - 1] = '\0';
+    free(file_path);
   }
-
-  char name_buf[MAX_RECORDING_NAME_LEN + 1];
-  strncpy(name_buf, start_of_recording_name, recording_name_len);
-  // create name_buf so that we gaurantee passing a null terminated string to build_file_path
-  name_buf[recording_name_len] = '\0';
-  char *file_path = build_file_path(name_buf);
-  if (!file_path) return -1;
-  strncpy(shared_mem->file_path, file_path, MAX_FILE_PATH_LEN - 1);
-  shared_mem->file_path[MAX_FILE_PATH_LEN - 1] = '\0';
-  free(file_path);
 
   return 0;
 failed_to_allocate:
@@ -163,8 +170,6 @@ void controller_stop_recording(int client_fd)
     goto failed_to_stop;
   }
 
-  printf("sending stop_recording signal\n");
-
   int bytes_sent = send(shared_mem->ws_fd, ws_frame_buf->frame_buf, ws_frame_buf->len, 0);
   if (bytes_sent < 0)
   {
@@ -180,6 +185,7 @@ void controller_stop_recording(int client_fd)
   free(ws_frame_buf);
 
   memset(shared_mem->file_path, 0, MAX_FILE_PATH_LEN); // wipe file_path
+  memset(shared_mem->recording_name, 0, MAX_RECORDING_NAME_LEN); // wipe recording_name
 
   send_response(client_fd, "recording stopped", 200);
   return;

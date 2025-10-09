@@ -1,13 +1,7 @@
 # Current PR TODO
 
 Next:
-- Make sure I can start/stop multiple times and it creates multiple files, without restarting the server
-- Refactor
-    - move all data/fs-related stuff to a module
-    - move set_recording_name out of device_control.c
-    - other?
-Next:
-- Continuously write incoming data to that file
+
 Next
 If I was to return any data to the client:
 - Modify your program to improve the path-parsing logic to handle folders, and handle responses appropriately.
