@@ -2,6 +2,7 @@
 #include "http-util.h"
 #include "http/http.h"
 #include "controllers/device_control.h"
+#include "controllers/recordings.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +33,16 @@ static int path_matches(const char *path, const char *expected)
   }
 
   return strcmp(path, expected) == 0;
+}
+
+static int path_starts_with(const char *path, const char *prefix)
+{
+  if (!path || !prefix) {
+    return 0;
+  }
+
+  size_t prefix_len = strlen(prefix);
+  return strncmp(path, prefix, prefix_len) == 0;
 }
 
 static int parse_request(char *recv_buf, struct req_t *request)
@@ -115,6 +126,10 @@ void router(int client_fd)
     return;
   }
 
+  /*
+   * ROUTER
+  */
+  // websocket-connect
   if (path_matches(request.path, "/websocket-connect"))
   {
     if (strncmp(request.method, "GET", strlen("GET")) == 0)
@@ -126,6 +141,7 @@ void router(int client_fd)
       send_405_response(client_fd);
     }
   }
+  // start-recording
   else if (path_matches(request.path, "/start-recording"))
   {
     if (strncmp(request.method, "POST", strlen("POST")) == 0)
@@ -137,6 +153,7 @@ void router(int client_fd)
       send_405_response(client_fd);
     }
   }
+  // stop-recording
   else if (path_matches(request.path, "/stop-recording"))
   {
     if (strncmp(request.method, "GET", strlen("GET")) == 0)
@@ -145,6 +162,27 @@ void router(int client_fd)
     }
     else
     {
+      send_405_response(client_fd);
+    }
+  }
+  // recordings
+  else if (path_matches(request.path, "/recordings"))
+  {
+    if (strncmp(request.method, "GET", strlen("GET")) == 0)
+    {
+      controller_get_all_recordings(client_fd);
+    }
+    else
+    {
+      send_405_response(client_fd);
+    }
+  }
+  // recording/{file_name}
+  else if (path_starts_with(request.path, "/recording/")) {
+    if (strncmp(request.method, "GET", strlen("GET")) == 0) {
+      char *recording_name = request.path + 11; // Skip "/recording/"
+      controller_get_recording(client_fd, recording_name);
+    } else {
       send_405_response(client_fd);
     }
   }

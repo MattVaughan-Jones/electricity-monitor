@@ -91,6 +91,13 @@ void controller_start_recording(int client_fd, char *body)
     goto failed_to_start;
   }
 
+  // Set recording name
+  if (set_recording_name(body) != 0) {
+    error_msg = "Request body malformed";
+    status = 400;
+    goto failed_to_start;
+  }
+
   char *start_recording = "{\"action\":\"start_recording\"}";
   ws_frame_buf_t *ws_frame_buf = ws_encode(start_recording, 1);
   if (!ws_frame_buf || !ws_frame_buf->frame_buf || !ws_frame_buf->len)
@@ -117,13 +124,6 @@ void controller_start_recording(int client_fd, char *body)
     free(ws_frame_buf);
     error_msg = "Internal server error";
     status = 500;
-    goto failed_to_start;
-  }
-
-  // Set recording name
-  if (set_recording_name(body) != 0) {
-    error_msg = "Request body malformed";
-    status = 400;
     goto failed_to_start;
   }
 
