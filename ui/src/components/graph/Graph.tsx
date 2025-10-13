@@ -1,4 +1,3 @@
-import type { PowerData } from '../../fixtures/power-data'
 import { Line } from 'react-chartjs-2'
 
 import {
@@ -24,13 +23,33 @@ ChartJS.register(
   Colors
 )
 
-export const Graph = ({ powerData }: { powerData: PowerData }) => {
+export type RecordingData = {
+  fileName: string
+  recordingName: string
+  data: {
+    type: string
+    timestamp: number
+    voltage: number
+    current: number
+    power: number
+    frequency: number
+  }[]
+}
+
+export const Graph = ({
+  inputData,
+}: {
+  inputData: RecordingData | undefined
+}) => {
+  if (!inputData) {
+    return <></>
+  }
   const data = {
-    labels: powerData.data.map(row => row.timestamp),
+    labels: inputData.data.map(row => row.timestamp),
     datasets: [
       {
-        label: powerData.device,
-        data: powerData.data.map(row => row.power),
+        label: inputData.recordingName,
+        data: inputData.data.map(row => row.power),
       },
     ],
   }
