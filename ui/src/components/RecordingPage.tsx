@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Graph, type RecordingData } from './graph/Graph'
+import { ComparisonGraph } from './graph/ComparisonGraph'
 import { LeftMenu } from './LeftMenu'
 import { RecordingControl } from './RecordingControl'
 import { Box } from '@mui/material'
@@ -18,11 +19,13 @@ type RecordingDataFromServer = {
 }
 
 const convertRecordingData = (
-  recording: RecordingDataFromServer
+  recording: RecordingDataFromServer,
+  fileName: string
 ): RecordingData => {
   const { recording_name, ...rest } = recording
   return {
     ...rest,
+    fileName,
     recordingName: recording_name,
   }
 }
@@ -58,7 +61,7 @@ export const Recording = () => {
       const json: RecordingDataFromServer = await res.json()
       console.log(json)
 
-      const graphData = convertRecordingData(json)
+      const graphData = convertRecordingData(json, fileName)
 
       setGraphData(graphData)
     } catch (e) {
@@ -88,7 +91,7 @@ export const Recording = () => {
         const res = await fetch(`http://localhost:8080/recording/${fileName}`)
         if (!res.ok) return
         const json: RecordingDataFromServer = await res.json()
-        const recordingData = convertRecordingData(json)
+        const recordingData = convertRecordingData(json, fileName)
 
         setSelectedRecordings(prev => new Set(prev).add(fileName))
         setComparisonData(prev => new Map(prev).set(fileName, recordingData))
@@ -112,12 +115,22 @@ export const Recording = () => {
             onRefresh={loadRecordings}
             selectedRecordings={Array.from(selectedRecordings)}
             onToggleRecording={onToggleRecording}
+            currentRecording={graphData?.fileName}
           />
         </div>
         <Box sx={{ flex: 1 }}>
           <Box sx={{ pb: 3 }}>
             <RecordingControl onRefresh={loadRecordings} />
           </Box>
+
+          {graphData && (
+            <Box sx={{ mb: 2, textAlign: 'center' }}>
+              <h2 style={{ color: 'white', margin: 0, fontSize: '1.5em' }}>
+                {graphData.recordingName}
+              </h2>
+            </Box>
+          )}
+
           <Box
             sx={{
               display: 'grid',
@@ -162,20 +175,17 @@ export const Recording = () => {
             />
           </Box>
 
-          {/* Power Comparison Graph */}
-          {comparisonData.size > 0 && (
-            <Box sx={{ mt: 3 }}>
-              <Graph
-                inputData={undefined}
+          {/* Power Comparison Graph - Always reserve space */}
+          <Box sx={{ mt: 3, height: '25vh' }}>
+            {comparisonData.size > 0 && (
+              <ComparisonGraph
+                recordings={Array.from(comparisonData.values())}
                 dataKey="power"
-                label="Power Comparison"
+                label="Power"
                 unit="W"
-                color="rgb(75, 192, 192)"
-                backgroundColor="rgba(75, 192, 192, 0.2)"
-                comparisonData={Array.from(comparisonData.values())}
               />
-            </Box>
-          )}
+            )}
+          </Box>
         </Box>
       </div>
     </>

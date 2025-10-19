@@ -12,12 +12,14 @@ export const LeftMenu = ({
   onRefresh,
   selectedRecordings,
   onToggleRecording,
+  currentRecording,
 }: {
   recordings: string[]
   onSelectRecording: (fileName: string) => void
   onRefresh: () => void
   selectedRecordings: string[]
   onToggleRecording: (fileName: string) => void
+  currentRecording?: string
 }) => {
   const parseRecordingName = (fileName: string): RecordingsListItem => {
     // Try to parse from fileName like "rec4_2025-10-10T08.20.08.json"
@@ -108,6 +110,7 @@ export const LeftMenu = ({
       >
         {sortedRecordings.map(recording => {
           const isSelected = selectedRecordings.includes(recording.fileName)
+          const isCurrent = currentRecording === recording.fileName
           return (
             <Card
               key={recording.fileName}
@@ -116,8 +119,11 @@ export const LeftMenu = ({
                 p: 1.5,
                 mb: 1.5,
                 boxSizing: 'border-box',
-                bgcolor: '#2a2a2a',
+                bgcolor: isCurrent ? '#4a4a4a' : '#2a2a2a',
                 cursor: 'pointer',
+                border: isCurrent
+                  ? '3px solid #00bcd4'
+                  : '3px solid transparent',
               }}
               onClick={() => onSelectRecording(recording.fileName)}
             >

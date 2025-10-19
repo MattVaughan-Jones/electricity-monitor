@@ -37,44 +37,58 @@ export type RecordingData = {
   }[]
 }
 
-export type GraphProps = {
-  inputData: RecordingData | undefined
+export type ComparisonGraphProps = {
+  recordings: RecordingData[]
   dataKey: 'voltage' | 'current' | 'power' | 'frequency'
   label: string
   unit: string
-  color: string
-  backgroundColor: string
 }
 
-export const Graph = ({
-  inputData,
+export const ComparisonGraph = ({
+  recordings,
   dataKey,
   label,
   unit,
-  color,
-  backgroundColor,
-}: GraphProps) => {
-  if (!inputData) {
+}: ComparisonGraphProps) => {
+  if (recordings.length === 0) {
     return <></>
   }
 
-  // Convert timestamps to seconds
-  const timeLabels = inputData.data.map(row =>
+  // Find the recording with the most data points (longest duration)
+  const longestRecording = recordings.reduce((longest, current) =>
+    current.data.length > longest.data.length ? current : longest
+  )
+
+  // Use the longest recording's time scale
+  const timeLabels = longestRecording.data.map(row =>
     (row.timestamp / 1000).toFixed(1)
   )
 
+  const comparisonColors = [
+    'rgb(255, 159, 64)',
+    'rgb(153, 102, 255)',
+    'rgb(255, 99, 255)',
+    'rgb(99, 255, 132)',
+    'rgb(255, 255, 99)',
+    'rgb(255, 99, 132)',
+    'rgb(54, 162, 235)',
+    'rgb(75, 192, 192)',
+  ]
+
+  const datasets = recordings.map((recording, index) => ({
+    label: `${recording.recordingName} - ${label} (${unit})`,
+    data: recording.data.map(row => row[dataKey]),
+    borderColor: comparisonColors[index % comparisonColors.length],
+    backgroundColor: comparisonColors[index % comparisonColors.length]
+      .replace('rgb', 'rgba')
+      .replace(')', ', 0.2)'),
+    yAxisID: 'y',
+    tension: 0.1,
+  }))
+
   const data = {
     labels: timeLabels,
-    datasets: [
-      {
-        label: `${label} (${unit})`,
-        data: inputData.data.map(row => row[dataKey]),
-        borderColor: color,
-        backgroundColor: backgroundColor,
-        yAxisID: 'y',
-        tension: 0.1,
-      },
-    ],
+    datasets,
   }
 
   const options = {
@@ -106,13 +120,14 @@ export const Graph = ({
         grid: {
           color: 'rgba(255, 255, 255, 0.1)',
         },
+        min: 0,
         ticks: {
-          color: color,
+          color: 'white',
         },
         title: {
           display: true,
           text: `${label} (${unit})`,
-          color: color,
+          color: 'white',
         },
       },
     },
