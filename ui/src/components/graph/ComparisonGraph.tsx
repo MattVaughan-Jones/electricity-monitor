@@ -76,7 +76,7 @@ export const ComparisonGraph = ({
   ]
 
   const datasets = recordings.map((recording, index) => ({
-    label: `${recording.recordingName} - ${label} (${unit})`,
+    label: `${recording.recordingName}`,
     data: recording.data.map(row => row[dataKey]),
     borderColor: comparisonColors[index % comparisonColors.length],
     backgroundColor: comparisonColors[index % comparisonColors.length]

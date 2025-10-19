@@ -132,8 +132,7 @@ export const LeftMenu = ({
                   control={
                     <Checkbox
                       checked={isSelected}
-                      onChange={e => {
-                        e.stopPropagation()
+                      onChange={() => {
                         onToggleRecording(recording.fileName)
                       }}
                       sx={{
@@ -146,6 +145,9 @@ export const LeftMenu = ({
                   }
                   label=""
                   sx={{ m: 0 }}
+                  onClick={e => {
+                    e.stopPropagation()
+                  }}
                 />
                 <Box sx={{ flex: 1 }}>
                   <div style={{ fontWeight: 600, color: '#fff' }}>

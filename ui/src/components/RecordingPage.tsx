@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Graph, type RecordingData } from './graph/Graph'
 import { ComparisonGraph } from './graph/ComparisonGraph'
+import { PowerIntegral } from './graph/PowerIntegral'
 import { LeftMenu } from './LeftMenu'
 import { RecordingControl } from './RecordingControl'
 import { Box } from '@mui/material'
@@ -183,25 +184,35 @@ export const Recording = () => {
               backgroundColor="rgba(255, 205, 86, 0.2)"
             />
           </Box>
-
-          {/* Power Comparison Graph - Always reserve space */}
+          {/* Power Comparison Graph and Power Integral */}
           <Box
             sx={{
-              height: '28vh',
+              height: '50vh',
               bgcolor: 'rgba(255, 255, 255, 0.02)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               borderRadius: 1,
               p: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
             }}
           >
-            {comparisonData.size > 0 && (
-              <ComparisonGraph
-                recordings={Array.from(comparisonData.values())}
-                dataKey="power"
-                label="Power"
-                unit="W"
-              />
-            )}
+            {/* Comparison Graph */}
+            <Box sx={{ flex: 0.6, height: '100%' }}>
+              {comparisonData.size > 0 && (
+                <ComparisonGraph
+                  recordings={Array.from(comparisonData.values())}
+                  dataKey="power"
+                  label="Power"
+                  unit="W"
+                />
+              )}
+            </Box>
+
+            {/* Power Integral table and bar graph */}
+            <Box sx={{ flex: 0.4, height: '100%' }}>
+              <PowerIntegral recordings={Array.from(comparisonData.values())} />
+            </Box>
           </Box>
         </Box>
       </div>
