@@ -32,6 +32,12 @@ export const Recording = () => {
   const [graphData, setGraphData] = useState<RecordingData | undefined>(
     undefined
   )
+  const [selectedRecordings, setSelectedRecordings] = useState<Set<string>>(
+    new Set()
+  )
+  const [comparisonData, setComparisonData] = useState<
+    Map<string, RecordingData>
+  >(new Map())
 
   const loadRecordings = async () => {
     try {
@@ -61,6 +67,37 @@ export const Recording = () => {
     }
   }
 
+  const onToggleRecording = async (fileName: string) => {
+    const isCurrentlySelected = selectedRecordings.has(fileName)
+
+    if (isCurrentlySelected) {
+      // Remove from selection
+      setSelectedRecordings(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(fileName)
+        return newSet
+      })
+      setComparisonData(prev => {
+        const newMap = new Map(prev)
+        newMap.delete(fileName)
+        return newMap
+      })
+    } else {
+      // Add to selection
+      try {
+        const res = await fetch(`http://localhost:8080/recording/${fileName}`)
+        if (!res.ok) return
+        const json: RecordingDataFromServer = await res.json()
+        const recordingData = convertRecordingData(json)
+
+        setSelectedRecordings(prev => new Set(prev).add(fileName))
+        setComparisonData(prev => new Map(prev).set(fileName, recordingData))
+      } catch (e) {
+        console.error('failed to load recording for comparison', e)
+      }
+    }
+  }
+
   useEffect(() => {
     loadRecordings()
   }, [])
@@ -73,11 +110,13 @@ export const Recording = () => {
             recordings={recordings}
             onSelectRecording={onSelectRecording}
             onRefresh={loadRecordings}
+            selectedRecordings={Array.from(selectedRecordings)}
+            onToggleRecording={onToggleRecording}
           />
         </div>
         <Box sx={{ flex: 1 }}>
           <Box sx={{ pb: 3 }}>
-            <RecordingControl />
+            <RecordingControl onRefresh={loadRecordings} />
           </Box>
           <Box
             sx={{
@@ -122,6 +161,21 @@ export const Recording = () => {
               backgroundColor="rgba(255, 205, 86, 0.2)"
             />
           </Box>
+
+          {/* Power Comparison Graph */}
+          {comparisonData.size > 0 && (
+            <Box sx={{ mt: 3 }}>
+              <Graph
+                inputData={undefined}
+                dataKey="power"
+                label="Power Comparison"
+                unit="W"
+                color="rgb(75, 192, 192)"
+                backgroundColor="rgba(75, 192, 192, 0.2)"
+                comparisonData={Array.from(comparisonData.values())}
+              />
+            </Box>
+          )}
         </Box>
       </div>
     </>

@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)(() => ({
   },
 }))
 
-export const RecordingControl = () => {
+export const RecordingControl = ({ onRefresh }: { onRefresh: () => void }) => {
   const [startSnackbarOpen, setStartSnackbarOpen] = useState(false)
   const [stopSnackbarOpen, setStopSnackbarOpen] = useState(false)
   const [recordingName, setRecordingName] = useState('')
@@ -29,6 +29,7 @@ export const RecordingControl = () => {
     const res = await fetch('http://localhost:8080/stop-recording')
     if (res.ok) {
       setStopSnackbarOpen(true)
+      onRefresh() // Refresh the recordings list
     }
   }
 

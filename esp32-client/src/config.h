@@ -15,7 +15,7 @@
 #define STATUS_LED_PIN 2
 
 // Data Streaming Configuration
-#define DATA_INTERVAL_MS 200  // Send data every 2 seconds
+#define DATA_INTERVAL_MS 500  // Send data every 2 seconds
 #define RECONNECT_INTERVAL_MS 5000
 
 // Debug Configuration

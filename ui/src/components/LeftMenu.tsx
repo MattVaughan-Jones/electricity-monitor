@@ -1,4 +1,4 @@
-import { Box, Button, Card } from '@mui/material'
+import { Box, Button, Card, Checkbox, FormControlLabel } from '@mui/material'
 
 type RecordingsListItem = {
   name: string
@@ -10,10 +10,14 @@ export const LeftMenu = ({
   recordings,
   onSelectRecording,
   onRefresh,
+  selectedRecordings,
+  onToggleRecording,
 }: {
   recordings: string[]
   onSelectRecording: (fileName: string) => void
   onRefresh: () => void
+  selectedRecordings: string[]
+  onToggleRecording: (fileName: string) => void
 }) => {
   const parseRecordingName = (fileName: string): RecordingsListItem => {
     // Try to parse from fileName like "rec4_2025-10-10T08.20.08.json"
@@ -81,8 +85,29 @@ export const LeftMenu = ({
           Refresh
         </Button>
       </Box>
-      <div style={{ width: '100%' }}>
+      <Box
+        sx={{
+          width: '100%',
+          maxHeight: '70vh',
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: 'rgba(255, 255, 255, 0.3)',
+            borderRadius: '4px',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            },
+          },
+        }}
+      >
         {sortedRecordings.map(recording => {
+          const isSelected = selectedRecordings.includes(recording.fileName)
           return (
             <Card
               key={recording.fileName}
@@ -96,17 +121,42 @@ export const LeftMenu = ({
               }}
               onClick={() => onSelectRecording(recording.fileName)}
             >
-              <div style={{ fontWeight: 600, color: '#fff' }}>
-                {recording.name}
-              </div>
-              <div style={{ color: '#bbb', fontStyle: 'italic', fontSize: 12 }}>
-                {recording.datetime.toLocaleDateString()}{' '}
-                {recording.datetime.toLocaleTimeString()}
-              </div>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isSelected}
+                      onChange={e => {
+                        e.stopPropagation()
+                        onToggleRecording(recording.fileName)
+                      }}
+                      sx={{
+                        color: 'white',
+                        '&.Mui-checked': {
+                          color: 'white',
+                        },
+                      }}
+                    />
+                  }
+                  label=""
+                  sx={{ m: 0 }}
+                />
+                <Box sx={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, color: '#fff' }}>
+                    {recording.name}
+                  </div>
+                  <div
+                    style={{ color: '#bbb', fontStyle: 'italic', fontSize: 12 }}
+                  >
+                    {recording.datetime.toLocaleDateString()}{' '}
+                    {recording.datetime.toLocaleTimeString()}
+                  </div>
+                </Box>
+              </Box>
             </Card>
           )
         })}
-      </div>
+      </Box>
     </Box>
   )
 }

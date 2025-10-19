@@ -10,6 +10,7 @@
 // Global variables
 WiFiClient wifiClient;  // Make this global!
 bool recording = false;
+unsigned long recordingStartTime = 0;  // Timestamp when recording started
 
 // Modbus setup
 ModbusMaster node;
@@ -70,7 +71,7 @@ void sendElectricityData() {
     // Create JSON payload with electricity data
     StaticJsonDocument<300> doc;
     doc["type"] = "data";
-    doc["timestamp"] = millis();
+    doc["timestamp"] = millis() - recordingStartTime;  // Relative time in milliseconds
     
     // Read actual data from JSY-MK-194G via Modbus
     uint8_t result;
@@ -133,7 +134,9 @@ void handleIncomingMessage(String message) {
   // Handle action messages
   if (action == "start_recording") {
     recording = true;
+    recordingStartTime = millis();  // Record the start time
   } else if (action == "stop_recording") {
     recording = false;
+    recordingStartTime = 0;  // Reset start time
   }
 }
