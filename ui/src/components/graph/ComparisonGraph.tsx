@@ -152,7 +152,7 @@ export const ComparisonGraph = ({
   }
 
   return (
-    <div style={{ height: '25vh' }}>
+    <div style={{ height: '100%' }}>
       <Line data={data} options={options} />
     </div>
   )

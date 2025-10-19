@@ -90,7 +90,7 @@ export const LeftMenu = ({
       <Box
         sx={{
           width: '100%',
-          maxHeight: '70vh',
+          height: 'calc(100vh - 80px)',
           overflowY: 'auto',
           '&::-webkit-scrollbar': {
             width: '8px',

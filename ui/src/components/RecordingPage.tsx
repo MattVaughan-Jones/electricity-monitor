@@ -107,8 +107,8 @@ export const Recording = () => {
 
   return (
     <>
-      <div style={{ display: 'flex', gap: '50px' }}>
-        <div style={{ width: '300px', minWidth: '300px', maxWidth: '300px' }}>
+      <div style={{ display: 'flex', gap: '30px', height: '100vh' }}>
+        <div style={{ width: '280px', minWidth: '280px', maxWidth: '280px' }}>
           <LeftMenu
             recordings={recordings}
             onSelectRecording={onSelectRecording}
@@ -119,13 +119,22 @@ export const Recording = () => {
           />
         </div>
         <Box sx={{ flex: 1 }}>
-          <Box sx={{ pb: 3 }}>
+          <Box
+            sx={{
+              pb: 1,
+              bgcolor: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              p: 1,
+              mb: 2,
+            }}
+          >
             <RecordingControl onRefresh={loadRecordings} />
           </Box>
 
           {graphData && (
-            <Box sx={{ mb: 2, textAlign: 'center' }}>
-              <h2 style={{ color: 'white', margin: 0, fontSize: '1.5em' }}>
+            <Box sx={{ mb: 1, textAlign: 'center' }}>
+              <h2 style={{ color: 'white', margin: 0, fontSize: '1em' }}>
                 {graphData.recordingName}
               </h2>
             </Box>
@@ -136,9 +145,9 @@ export const Recording = () => {
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               gridTemplateRows: '1fr 1fr',
-              gap: 2,
-              height: '50vh',
-              mb: 5,
+              gap: 1,
+              height: '45vh',
+              mb: 4,
             }}
           >
             <Graph
@@ -176,7 +185,15 @@ export const Recording = () => {
           </Box>
 
           {/* Power Comparison Graph - Always reserve space */}
-          <Box sx={{ mt: 3, height: '25vh' }}>
+          <Box
+            sx={{
+              height: '28vh',
+              bgcolor: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              p: 1,
+            }}
+          >
             {comparisonData.size > 0 && (
               <ComparisonGraph
                 recordings={Array.from(comparisonData.values())}

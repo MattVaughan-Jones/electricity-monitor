@@ -118,11 +118,7 @@ export const Graph = ({
     },
     plugins: {
       legend: {
-        position: 'top' as const,
-        labels: {
-          color: 'white',
-          usePointStyle: true,
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -137,7 +133,7 @@ export const Graph = ({
   }
 
   return (
-    <div style={{ height: '25vh' }}>
+    <div style={{ height: '100%' }}>
       <Line data={data} options={options} />
     </div>
   )
