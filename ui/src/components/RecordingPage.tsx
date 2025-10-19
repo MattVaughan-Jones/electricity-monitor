@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Graph, type RecordingData } from './graph/Graph'
 import { LeftMenu } from './LeftMenu'
 import { RecordingControl } from './RecordingControl'
+import { Box } from '@mui/material'
 
 type RecordingDataFromServer = {
   fileName: string
@@ -74,10 +75,54 @@ export const Recording = () => {
             onRefresh={loadRecordings}
           />
         </div>
-        <div style={{ flex: 1 }}>
-          <Graph inputData={graphData} />
-          <RecordingControl />
-        </div>
+        <Box sx={{ flex: 1 }}>
+          <Box sx={{ pb: 3 }}>
+            <RecordingControl />
+          </Box>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gridTemplateRows: '1fr 1fr',
+              gap: 2,
+              height: '50vh',
+              mb: 5,
+            }}
+          >
+            <Graph
+              inputData={graphData}
+              dataKey="voltage"
+              label="Voltage"
+              unit="V"
+              color="rgb(255, 99, 132)"
+              backgroundColor="rgba(255, 99, 132, 0.2)"
+            />
+            <Graph
+              inputData={graphData}
+              dataKey="current"
+              label="Current"
+              unit="A"
+              color="rgb(54, 162, 235)"
+              backgroundColor="rgba(54, 162, 235, 0.2)"
+            />
+            <Graph
+              inputData={graphData}
+              dataKey="power"
+              label="Power"
+              unit="W"
+              color="rgb(75, 192, 192)"
+              backgroundColor="rgba(75, 192, 192, 0.2)"
+            />
+            <Graph
+              inputData={graphData}
+              dataKey="frequency"
+              label="Frequency"
+              unit="Hz"
+              color="rgb(255, 205, 86)"
+              backgroundColor="rgba(255, 205, 86, 0.2)"
+            />
+          </Box>
+        </Box>
       </div>
     </>
   )

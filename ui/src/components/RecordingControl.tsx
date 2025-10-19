@@ -49,26 +49,24 @@ export const RecordingControl = () => {
           setRecordingName(e.target.value)
         }
       />
-      <div>
-        <button onClick={onClickStart} style={{ margin: '10px' }}>
-          Start
-        </button>
-        <Snackbar
-          open={startSnackbarOpen}
-          autoHideDuration={3000}
-          message="Recording started"
-          onClose={closeStartSnackbar}
-        />
-        <button onClick={onClickStop} style={{ margin: '10px' }}>
-          Stop
-        </button>
-        <Snackbar
-          open={stopSnackbarOpen}
-          autoHideDuration={3000}
-          message="Recording stopped"
-          onClose={closeStopSnackbar}
-        />
-      </div>
+      <button onClick={onClickStart} style={{ margin: '10px' }}>
+        Start
+      </button>
+      <Snackbar
+        open={startSnackbarOpen}
+        autoHideDuration={3000}
+        message="Recording started"
+        onClose={closeStartSnackbar}
+      />
+      <button onClick={onClickStop} style={{ margin: '10px' }}>
+        Stop
+      </button>
+      <Snackbar
+        open={stopSnackbarOpen}
+        autoHideDuration={3000}
+        message="Recording stopped"
+        onClose={closeStopSnackbar}
+      />
     </>
   )
 }
