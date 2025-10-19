@@ -1,6 +1,14 @@
 import { useState } from 'react'
-// import './RecordingControl.css'
-import { Snackbar, TextField } from '@mui/material'
+import { Snackbar, TextField, styled } from '@mui/material'
+
+const StyledTextField = styled(TextField)(() => ({
+  '& .MuiInputLabel-root': {
+    color: 'white',
+  },
+  '& .MuiInputBase-input': {
+    color: 'white',
+  },
+}))
 
 export const RecordingControl = () => {
   const [startSnackbarOpen, setStartSnackbarOpen] = useState(false)
@@ -33,11 +41,13 @@ export const RecordingControl = () => {
 
   return (
     <>
-      <TextField
+      <StyledTextField
         id="recording-name"
         label="Recording Name"
         variant="filled"
-        onChange={e => setRecordingName(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setRecordingName(e.target.value)
+        }
       />
       <div>
         <button onClick={onClickStart} style={{ margin: '10px' }}>

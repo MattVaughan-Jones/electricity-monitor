@@ -100,7 +100,8 @@ export const LeftMenu = ({
                 {recording.name}
               </div>
               <div style={{ color: '#bbb', fontStyle: 'italic', fontSize: 12 }}>
-                {recording.datetime.toDateString()}
+                {recording.datetime.toLocaleDateString()}{' '}
+                {recording.datetime.toLocaleTimeString()}
               </div>
             </Card>
           )
