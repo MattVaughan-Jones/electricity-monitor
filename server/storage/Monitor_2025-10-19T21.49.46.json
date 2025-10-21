@@ -1,0 +1,15 @@
+{
+  "recording_name": "Monitor",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":241.303,"current":0.1127,"power":17.4538,"frequency":49.99},
+    {"type":"data","timestamp":969,"voltage":241.2841,"current":0.1125,"power":17.4912,"frequency":49.99},
+    {"type":"data","timestamp":1837,"voltage":241.2706,"current":0.1122,"power":17.4471,"frequency":49.99},
+    {"type":"data","timestamp":2702,"voltage":241.2463,"current":0.1125,"power":17.4285,"frequency":49.99},
+    {"type":"data","timestamp":3563,"voltage":241.2099,"current":0.1127,"power":17.4826,"frequency":49.98},
+    {"type":"data","timestamp":4433,"voltage":241.2369,"current":0.113,"power":17.4665,"frequency":49.98},
+    {"type":"data","timestamp":5296,"voltage":241.2166,"current":0.1127,"power":17.4627,"frequency":49.98},
+    {"type":"data","timestamp":6165,"voltage":241.1802,"current":0.1125,"power":17.4475,"frequency":49.98},
+    {"type":"data","timestamp":7032,"voltage":241.222,"current":0.1122,"power":17.443,"frequency":49.97},
+    {"type":"data","timestamp":7898,"voltage":241.164,"current":0.1111,"power":17.4518,"frequency":49.98}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "recording_name": "Monitor unplug-replug-HDMI",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":237.5554,"current":0.1156,"power":17.3727,"frequency":49.94},
+    {"type":"data","timestamp":963,"voltage":237.5095,"current":0.1139,"power":17.3882,"frequency":49.95},
+    {"type":"data","timestamp":1834,"voltage":237.4582,"current":0.1144,"power":17.425,"frequency":49.95},
+    {"type":"data","timestamp":2697,"voltage":237.4947,"current":0.1144,"power":17.3884,"frequency":49.95},
+    {"type":"data","timestamp":3570,"voltage":237.4744,"current":0.1139,"power":17.4355,"frequency":49.96},
+    {"type":"data","timestamp":4536,"voltage":237.4204,"current":0.0256,"power":1.7307,"frequency":49.95},
+    {"type":"data","timestamp":5398,"voltage":237.5824,"current":0.0175,"power":0.519,"frequency":49.95},
+    {"type":"data","timestamp":6257,"voltage":237.5919,"current":0.0175,"power":0.5247,"frequency":49.95},
+    {"type":"data","timestamp":7120,"voltage":237.5527,"current":0.0175,"power":0.5598,"frequency":49.95},
+    {"type":"data","timestamp":7989,"voltage":237.6013,"current":0.0173,"power":0.515,"frequency":49.95},
+    {"type":"data","timestamp":8856,"voltage":237.5379,"current":0.0263,"power":2.1972,"frequency":49.94},
+    {"type":"data","timestamp":9722,"voltage":237.5541,"current":0.1106,"power":16.5879,"frequency":49.95},
+    {"type":"data","timestamp":10593,"voltage":237.4069,"current":0.1096,"power":16.6029,"frequency":49.94},
+    {"type":"data","timestamp":11471,"voltage":237.5554,"current":0.1077,"power":15.5353,"frequency":49.95},
+    {"type":"data","timestamp":12334,"voltage":237.5419,"current":0.0175,"power":0,"frequency":49.94},
+    {"type":"data","timestamp":13214,"voltage":237.3097,"current":0.017,"power":0,"frequency":49.94},
+    {"type":"data","timestamp":14090,"voltage":237.4596,"current":0.0192,"power":0.9807,"frequency":49.93},
+    {"type":"data","timestamp":14956,"voltage":237.334,"current":0.037,"power":3.8452,"frequency":49.93},
+    {"type":"data","timestamp":15826,"voltage":237.2449,"current":0.116,"power":17.4019,"frequency":49.93},
+    {"type":"data","timestamp":16696,"voltage":237.2679,"current":0.1163,"power":17.3855,"frequency":49.93},
+    {"type":"data","timestamp":17556,"voltage":237.2665,"current":0.116,"power":17.4122,"frequency":49.93},
+    {"type":"data","timestamp":18418,"voltage":237.4056,"current":0.1163,"power":17.4204,"frequency":49.94}
+  ]
+}

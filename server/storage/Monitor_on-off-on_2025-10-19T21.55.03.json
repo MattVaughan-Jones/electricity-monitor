@@ -1,0 +1,31 @@
+{
+  "recording_name": "Monitor on-off-on",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":238.8649,"current":0.1103,"power":17.4005,"frequency":49.97},
+    {"type":"data","timestamp":960,"voltage":239.062,"current":0.1106,"power":17.4655,"frequency":49.97},
+    {"type":"data","timestamp":1824,"voltage":239.2713,"current":0.1103,"power":17.4044,"frequency":49.97},
+    {"type":"data","timestamp":2685,"voltage":239.4684,"current":0.1103,"power":17.3774,"frequency":49.98},
+    {"type":"data","timestamp":3548,"voltage":239.3536,"current":0.1103,"power":17.4271,"frequency":49.98},
+    {"type":"data","timestamp":4430,"voltage":239.3239,"current":0.0954,"power":13.6351,"frequency":49.99},
+    {"type":"data","timestamp":5300,"voltage":239.5291,"current":0.0227,"power":0,"frequency":49.99},
+    {"type":"data","timestamp":6169,"voltage":239.4076,"current":0.0166,"power":0,"frequency":49.99},
+    {"type":"data","timestamp":7131,"voltage":239.0769,"current":0.0168,"power":0,"frequency":50},
+    {"type":"data","timestamp":8000,"voltage":239.0242,"current":0.0166,"power":0,"frequency":50.01},
+    {"type":"data","timestamp":8862,"voltage":239.5939,"current":0.0166,"power":0,"frequency":50.01},
+    {"type":"data","timestamp":9736,"voltage":239.6047,"current":0.0166,"power":0,"frequency":50.01},
+    {"type":"data","timestamp":10603,"voltage":239.5318,"current":0.0168,"power":0.8934,"frequency":50.02},
+    {"type":"data","timestamp":11465,"voltage":239.5183,"current":0.0515,"power":5.1854,"frequency":50.01},
+    {"type":"data","timestamp":12335,"voltage":239.2753,"current":0.1241,"power":19.5853,"frequency":50.01},
+    {"type":"data","timestamp":13197,"voltage":239.4157,"current":0.1265,"power":19.9103,"frequency":50.01},
+    {"type":"data","timestamp":14067,"voltage":239.0715,"current":0.1262,"power":19.5802,"frequency":50.01},
+    {"type":"data","timestamp":14943,"voltage":239.0701,"current":0.032,"power":1.0899,"frequency":50.01},
+    {"type":"data","timestamp":15809,"voltage":238.788,"current":0.0192,"power":0.9978,"frequency":50.01},
+    {"type":"data","timestamp":16680,"voltage":238.8487,"current":0.1027,"power":15.467,"frequency":49.99},
+    {"type":"data","timestamp":17649,"voltage":239.2834,"current":0.1099,"power":17.4193,"frequency":49.99},
+    {"type":"data","timestamp":18511,"voltage":239.3293,"current":0.1101,"power":17.4539,"frequency":49.98},
+    {"type":"data","timestamp":19381,"voltage":239.3361,"current":0.1099,"power":17.4645,"frequency":49.98},
+    {"type":"data","timestamp":20250,"voltage":239.4535,"current":0.1106,"power":17.4284,"frequency":49.98},
+    {"type":"data","timestamp":21123,"voltage":239.3442,"current":0.1106,"power":17.4264,"frequency":49.99},
+    {"type":"data","timestamp":21985,"voltage":239.3037,"current":0.1106,"power":17.3978,"frequency":49.98}
+  ]
+}

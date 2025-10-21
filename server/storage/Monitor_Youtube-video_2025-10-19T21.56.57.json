@@ -1,0 +1,27 @@
+{
+  "recording_name": "Monitor Youtube-video",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":239.116,"current":0.1151,"power":17.4266,"frequency":50.02},
+    {"type":"data","timestamp":882,"voltage":239.4657,"current":0.1151,"power":17.4211,"frequency":50.02},
+    {"type":"data","timestamp":1748,"voltage":239.2834,"current":0.1151,"power":17.4417,"frequency":50.01},
+    {"type":"data","timestamp":2609,"voltage":239.4549,"current":0.1149,"power":17.4845,"frequency":50.02},
+    {"type":"data","timestamp":3470,"voltage":239.1606,"current":0.1151,"power":17.4656,"frequency":50.01},
+    {"type":"data","timestamp":4430,"voltage":239.3833,"current":0.1156,"power":17.5023,"frequency":50.01},
+    {"type":"data","timestamp":5292,"voltage":239.0985,"current":0.1158,"power":17.4835,"frequency":50},
+    {"type":"data","timestamp":6166,"voltage":239.2956,"current":0.1156,"power":17.4741,"frequency":49.99},
+    {"type":"data","timestamp":7034,"voltage":239.085,"current":0.1146,"power":17.4591,"frequency":49.99},
+    {"type":"data","timestamp":7904,"voltage":239.3077,"current":0.1153,"power":17.4926,"frequency":49.99},
+    {"type":"data","timestamp":8764,"voltage":239.193,"current":0.1153,"power":17.4695,"frequency":49.99},
+    {"type":"data","timestamp":9625,"voltage":239.1349,"current":0.1153,"power":17.4588,"frequency":49.98},
+    {"type":"data","timestamp":10487,"voltage":239.1808,"current":0.1151,"power":17.4522,"frequency":49.98},
+    {"type":"data","timestamp":11363,"voltage":239.1768,"current":0.1151,"power":17.4666,"frequency":49.98},
+    {"type":"data","timestamp":12227,"voltage":239.1579,"current":0.1156,"power":17.4728,"frequency":49.99},
+    {"type":"data","timestamp":13099,"voltage":239.3253,"current":0.1156,"power":17.5112,"frequency":50},
+    {"type":"data","timestamp":13965,"voltage":239.1498,"current":0.1153,"power":17.5004,"frequency":49.99},
+    {"type":"data","timestamp":14839,"voltage":239.2375,"current":0.1156,"power":17.5016,"frequency":50.01},
+    {"type":"data","timestamp":15700,"voltage":239.2578,"current":0.1158,"power":17.4857,"frequency":50.01},
+    {"type":"data","timestamp":16562,"voltage":239.3388,"current":0.1156,"power":17.4653,"frequency":50.02},
+    {"type":"data","timestamp":17431,"voltage":239.2146,"current":0.1153,"power":17.4683,"frequency":50.02},
+    {"type":"data","timestamp":18292,"voltage":239.4238,"current":0.1153,"power":17.4409,"frequency":50.01}
+  ]
+}

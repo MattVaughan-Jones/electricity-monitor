@@ -1,0 +1,15 @@
+{
+  "recording_name": "Microwaving standby",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":242.2264,"current":0.2267,"power":0.7895,"frequency":50.01},
+    {"type":"data","timestamp":866,"voltage":242.1036,"current":0.2264,"power":0.773,"frequency":50.01},
+    {"type":"data","timestamp":1736,"voltage":242.0658,"current":0.2264,"power":0.8767,"frequency":50.01},
+    {"type":"data","timestamp":2596,"voltage":242.1913,"current":0.2264,"power":0.8578,"frequency":50},
+    {"type":"data","timestamp":3458,"voltage":242.0293,"current":0.2262,"power":0.7733,"frequency":49.98},
+    {"type":"data","timestamp":4319,"voltage":242.1279,"current":0.2264,"power":0.7884,"frequency":49.99},
+    {"type":"data","timestamp":5196,"voltage":242.1103,"current":0.2262,"power":0.7475,"frequency":49.98},
+    {"type":"data","timestamp":6059,"voltage":242.0266,"current":0.2262,"power":0.8118,"frequency":49.98},
+    {"type":"data","timestamp":6931,"voltage":241.9389,"current":0.2262,"power":0.7273,"frequency":49.97},
+    {"type":"data","timestamp":7793,"voltage":243.2686,"current":0.2276,"power":0.7521,"frequency":49.97}
+  ]
+}

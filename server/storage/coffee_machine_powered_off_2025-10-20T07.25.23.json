@@ -1,0 +1,18 @@
+{
+  "recording_name": "coffee machine powered off",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":237.3057,"current":0.1068,"power":0,"frequency":50.02},
+    {"type":"data","timestamp":863,"voltage":237.2017,"current":0.1065,"power":0,"frequency":50.02},
+    {"type":"data","timestamp":1724,"voltage":237.1734,"current":0.1068,"power":0,"frequency":50.02},
+    {"type":"data","timestamp":2592,"voltage":237.249,"current":0.1068,"power":0,"frequency":50.02},
+    {"type":"data","timestamp":3456,"voltage":237.0289,"current":0.1068,"power":0,"frequency":50.02},
+    {"type":"data","timestamp":4318,"voltage":237.4015,"current":0.1077,"power":0,"frequency":50.02},
+    {"type":"data","timestamp":5188,"voltage":238.63,"current":0.1075,"power":0,"frequency":50.03},
+    {"type":"data","timestamp":6059,"voltage":238.6638,"current":0.1077,"power":0,"frequency":50.03},
+    {"type":"data","timestamp":6934,"voltage":238.6503,"current":0.108,"power":0,"frequency":50.03},
+    {"type":"data","timestamp":7801,"voltage":238.9419,"current":0.108,"power":0,"frequency":50.03},
+    {"type":"data","timestamp":8671,"voltage":238.7367,"current":0.1077,"power":0,"frequency":50.03},
+    {"type":"data","timestamp":9542,"voltage":238.9095,"current":0.108,"power":0,"frequency":50.03},
+    {"type":"data","timestamp":10402,"voltage":238.5558,"current":0.1077,"power":0,"frequency":50.03}
+  ]
+}

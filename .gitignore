@@ -4,6 +4,3 @@ build/
 .cache/
 compile_commands.json
 .DS_Store
-
-# Server file storage
-server/storage/
