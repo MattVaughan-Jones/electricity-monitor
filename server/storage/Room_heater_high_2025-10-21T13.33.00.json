@@ -1,0 +1,23 @@
+{
+  "recording_name": "Room heater (high)",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":243.3672,"current":0,"power":0,"frequency":49.95},
+    {"type":"data","timestamp":865,"voltage":243.3564,"current":0.4617,"power":32.4474,"frequency":49.96},
+    {"type":"data","timestamp":1733,"voltage":240.5443,"current":4.1343,"power":988.3154,"frequency":49.96},
+    {"type":"data","timestamp":2603,"voltage":239.274,"current":4.6057,"power":1147.0006,"frequency":49.96},
+    {"type":"data","timestamp":3465,"voltage":238.7772,"current":5.2631,"power":1254.7676,"frequency":49.96},
+    {"type":"data","timestamp":4335,"voltage":238.5396,"current":5.6266,"power":1339.5446,"frequency":49.96},
+    {"type":"data","timestamp":5197,"voltage":238.0495,"current":5.8737,"power":1396.1574,"frequency":49.96},
+    {"type":"data","timestamp":6061,"voltage":237.6999,"current":6.2711,"power":1488.4441,"frequency":49.96},
+    {"type":"data","timestamp":6927,"voltage":237.6958,"current":6.3922,"power":1533.4244,"frequency":49.96},
+    {"type":"data","timestamp":7788,"voltage":237.5487,"current":6.6142,"power":1568.64,"frequency":49.97},
+    {"type":"data","timestamp":8749,"voltage":237.1842,"current":6.9513,"power":1646.0906,"frequency":49.97},
+    {"type":"data","timestamp":9618,"voltage":237.0127,"current":7.1815,"power":1698.2746,"frequency":49.97},
+    {"type":"data","timestamp":10487,"voltage":236.7873,"current":7.31,"power":1750.7794,"frequency":49.97},
+    {"type":"data","timestamp":11361,"voltage":236.362,"current":7.4961,"power":1768.6986,"frequency":49.97},
+    {"type":"data","timestamp":12223,"voltage":236.3242,"current":7.5892,"power":1789.7464,"frequency":49.97},
+    {"type":"data","timestamp":13103,"voltage":236.2567,"current":7.6309,"power":1799.3652,"frequency":49.97},
+    {"type":"data","timestamp":13964,"voltage":235.9503,"current":7.6874,"power":1810.138,"frequency":49.97},
+    {"type":"data","timestamp":14844,"voltage":236.1001,"current":7.728,"power":1824.6146,"frequency":49.97}
+  ]
+}

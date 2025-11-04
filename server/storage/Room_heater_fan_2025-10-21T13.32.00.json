@@ -1,0 +1,24 @@
+{
+  "recording_name": "Room heater (fan)",
+  "data": [
+    {"type":"data","timestamp":0,"voltage":243.4968,"current":0,"power":0,"frequency":49.96},
+    {"type":"data","timestamp":863,"voltage":243.5575,"current":0,"power":0,"frequency":49.96},
+    {"type":"data","timestamp":1739,"voltage":243.5197,"current":0,"power":0,"frequency":49.96},
+    {"type":"data","timestamp":2604,"voltage":243.4549,"current":0,"power":0,"frequency":49.97},
+    {"type":"data","timestamp":3464,"voltage":243.5386,"current":0.131,"power":23.2466,"frequency":49.97},
+    {"type":"data","timestamp":4325,"voltage":243.3334,"current":0.1272,"power":22.777,"frequency":49.97},
+    {"type":"data","timestamp":5196,"voltage":243.6507,"current":0.1217,"power":21.7206,"frequency":49.97},
+    {"type":"data","timestamp":6072,"voltage":243.6034,"current":0.1163,"power":20.5111,"frequency":49.97},
+    {"type":"data","timestamp":6938,"voltage":243.7317,"current":0.1146,"power":20.0753,"frequency":49.97},
+    {"type":"data","timestamp":7808,"voltage":243.5751,"current":0.1146,"power":20.1189,"frequency":49.97},
+    {"type":"data","timestamp":8668,"voltage":243.5589,"current":0.1146,"power":20.1296,"frequency":49.97},
+    {"type":"data","timestamp":9529,"voltage":243.5575,"current":0.1149,"power":20.1193,"frequency":49.97},
+    {"type":"data","timestamp":10390,"voltage":243.652,"current":0.1146,"power":20.1098,"frequency":49.97},
+    {"type":"data","timestamp":11255,"voltage":243.5899,"current":0.1149,"power":20.169,"frequency":49.97},
+    {"type":"data","timestamp":12232,"voltage":243.166,"current":0.1144,"power":20.0302,"frequency":49.97},
+    {"type":"data","timestamp":13092,"voltage":243.1768,"current":0.1146,"power":20.1228,"frequency":49.96},
+    {"type":"data","timestamp":15681,"voltage":243.567,"current":0.1146,"power":20.2469,"frequency":49.97},
+    {"type":"data","timestamp":16548,"voltage":243.4792,"current":0.1149,"power":20.2595,"frequency":49.97},
+    {"type":"data","timestamp":17415,"voltage":243.4401,"current":0.1149,"power":20.2556,"frequency":49.96}
+  ]
+}
